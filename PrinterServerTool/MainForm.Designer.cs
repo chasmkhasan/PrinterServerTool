@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			label1 = new Label();
-			drpPrinterList = new ComboBox();
+			cmbOptions = new ComboBox();
 			btnInstallPrinter = new Button();
 			btnSearch = new Button();
 			lstOfPrinterName = new ListBox();
@@ -45,23 +45,24 @@
 			label1.TabIndex = 0;
 			label1.Text = "Printer Server";
 			// 
-			// drpPrinterList
+			// cmbOptions
 			// 
-			drpPrinterList.FormattingEnabled = true;
-			drpPrinterList.Location = new Point(30, 76);
-			drpPrinterList.Name = "drpPrinterList";
-			drpPrinterList.Size = new Size(261, 23);
-			drpPrinterList.TabIndex = 1;
+			cmbOptions.FormattingEnabled = true;
+			cmbOptions.Location = new Point(30, 76);
+			cmbOptions.Name = "cmbOptions";
+			cmbOptions.Size = new Size(261, 23);
+			cmbOptions.TabIndex = 1;
 			// 
 			// btnInstallPrinter
 			// 
 			btnInstallPrinter.ForeColor = Color.FromArgb(0, 192, 0);
-			btnInstallPrinter.Location = new Point(119, 294);
+			btnInstallPrinter.Location = new Point(101, 293);
 			btnInstallPrinter.Name = "btnInstallPrinter";
 			btnInstallPrinter.Size = new Size(109, 23);
 			btnInstallPrinter.TabIndex = 2;
 			btnInstallPrinter.Text = "Install Server";
 			btnInstallPrinter.UseVisualStyleBackColor = true;
+			btnInstallPrinter.Click += btnInstallPrinter_Click;
 			// 
 			// btnSearch
 			// 
@@ -71,6 +72,7 @@
 			btnSearch.TabIndex = 3;
 			btnSearch.Text = "Search";
 			btnSearch.UseVisualStyleBackColor = true;
+			btnSearch.Click += btnSearch_Click;
 			// 
 			// lstOfPrinterName
 			// 
@@ -89,7 +91,7 @@
 			Controls.Add(lstOfPrinterName);
 			Controls.Add(btnSearch);
 			Controls.Add(btnInstallPrinter);
-			Controls.Add(drpPrinterList);
+			Controls.Add(cmbOptions);
 			Controls.Add(label1);
 			Name = "MainForm";
 			Text = "Printer's Tool";
@@ -100,7 +102,7 @@
 		#endregion
 
 		private Label label1;
-		private ComboBox drpPrinterList;
+		private ComboBox cmbOptions;
 		private Button btnInstallPrinter;
 		private Button btnSearch;
 		private ListBox lstOfPrinterName;

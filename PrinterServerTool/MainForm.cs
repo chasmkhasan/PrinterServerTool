@@ -6,10 +6,13 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
+		PrinterMgt printerMgt = new PrinterMgt();
+
 		public MainForm()
 		{
 			InitializeComponent();
 
+			// Start the code.
 			InitializeGUI();
 		}
 		private void InitializeGUI()
@@ -17,27 +20,59 @@ namespace PrinterServerTool
 			//change the title of the form.
 
 			this.Text += "Owned by Caironite";
-			PopulatePrinterList();
+			FillTheCombobox();
 		}
 
-		private void PopulatePrinterList()
+		private void FillTheCombobox()
 		{
-			drpPrinterList.Items.Clear();
+			cmbOptions.Items.Clear();
 
-			if (PrinterSettings.InstalledPrinters.Count <= 0)
+			cmbOptions.Items.Add("Please Select Server Name");
+			cmbOptions.Items.Add("Printer Server 01");
+			cmbOptions.Items.Add("Printer Server 02");
+			cmbOptions.Items.Add("Printer Server 03");
+			cmbOptions.Items.Add("Printer Server 04");
+			cmbOptions.Items.Add("Printer Server 05");
+			cmbOptions.Items.Add("Printer Server 06");
+
+			cmbOptions.SelectedIndex = 0;
+		}
+
+		private bool ReadChoice()
+		{
+			bool success = false;
+			int index = cmbOptions.SelectedIndex;
+
+			if (index >= 0)
 			{
-				MessageBox.Show("Printer not found!");
-				return;
+				printerMgt.SetChoice(index);
+				success = true;
 			}
+			return success;
+		}
 
-			foreach (string printer in PrinterSettings.InstalledPrinters)
+		private void btnSearch_Click(object sender, EventArgs e)
+		{
+			bool ok = ReadChoice();
+
+			if (ok)
 			{
-				drpPrinterList.Items.Add(printer);
+				List<string> listOfPrinters = printerMgt.ShowPrinterMgt();
+
+				lstOfPrinterName.Items.Clear();
+
+				foreach (string printerName in listOfPrinters)
+				{
+					lstOfPrinterName.Items.Add(printerName);
+				}
 			}
+		}
 
-			if (drpPrinterList.Items.Count > 0)
+		private void btnInstallPrinter_Click(object sender, EventArgs e)
+		{
+			if (printerMgt != null)
 			{
-				drpPrinterList.SelectedIndex = 0;
+				MessageBox.Show("No Printer Shared in this Server", "Error");
 			}
 		}
 	}
