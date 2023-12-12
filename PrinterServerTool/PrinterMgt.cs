@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,7 @@ namespace PrinterServerTool
 			}
 
 			return printerFloorOne;
+
 		}
 
 		private List<string> PrinterServerTwo()
@@ -146,6 +148,33 @@ namespace PrinterServerTool
 			};
 
 			return printerFloorSix;
+		}
+
+		static List<string> GetSharedPrinters()
+		{
+			List<string> sharedPrinters = new List<string>();
+
+			using (Process PowerShellProcess = new Process())
+			{
+				PowerShellProcess.StartInfo.FileName = "powershell.exe";
+				PowerShellProcess.StartInfo.RedirectStandardOutput = true;
+				PowerShellProcess.StartInfo.UseShellExecute = false;
+				PowerShellProcess.StartInfo.CreateNoWindow = true;
+				PowerShellProcess.StartInfo.Arguments = "Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | ForEach-Object { $_.Name }";
+
+				PowerShellProcess.Start();
+
+				while (!PowerShellProcess.StandardOutput.EndOfStream)
+				{
+					string line = PowerShellProcess.StandardOutput.ReadLine();
+					if (!string.IsNullOrEmpty(line))
+					{
+						sharedPrinters.Add(line);
+					}
+				}
+			}
+
+			return sharedPrinters;
 		}
 	}
 }
