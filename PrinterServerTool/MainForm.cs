@@ -6,7 +6,8 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-		PrinterMgt printerMgt = new PrinterMgt();
+		//PrinterMgt printerMgt = new PrinterMgt();
+		PrinterMgtShared printerMgt = new PrinterMgtShared();
 
 		public MainForm()
 		{
@@ -19,7 +20,7 @@ namespace PrinterServerTool
 		{
 			//change the title of the form.
 
-			this.Text += "Owned by Caironite";
+			this.Text += " Owned by Caironite";
 			FillTheCombobox();
 		}
 
@@ -72,7 +73,7 @@ namespace PrinterServerTool
 		{
 			if (printerMgt != null)
 			{
-				MessageBox.Show("No Printer Shared in this Server", "Error");
+				MessageBox.Show("Under Process", "Error");
 			}
 		}
 	}
