@@ -52,13 +52,13 @@ namespace PrinterServerTool
 			return success;
 		}
 
-		private void btnSearch_Click(object sender, EventArgs e)
+		private async void btnSearch_Click(object sender, EventArgs e)
 		{
 			bool ok = ReadChoice();
 
 			if (ok)
 			{
-				List<string> listOfPrinters = printerMgt.ShowPrinterMgt();
+				List<string> listOfPrinters = await printerMgt.ShowPrinterMgtAsync();
 
 				lstOfPrinterName.Items.Clear();
 
