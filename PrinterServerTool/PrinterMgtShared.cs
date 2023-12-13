@@ -21,37 +21,37 @@ namespace PrinterServerTool
 			choice = newChoice;
 		}
 
-		public List<string> ShowPrinterMgt()
+		public async Task<List<string>> ShowPrinterMgtAsync()
 		{
 			List<string> printerList = new List<string>();
 
 			switch (choice)
 			{
 				case 0:
-					printerList = GetSharedPrintersByServer(choice).ToList();
+					printerList = await GetSharedPrintersByServerAsync(choice);
 					break;
 				case 1:
-					printerList = GetSharedPrintersByServer(choice).ToList();
+					printerList = await GetSharedPrintersByServerAsync(choice);
 					break;
 				case 2:
-					printerList = GetSharedPrintersByServer(choice).ToList();
+					printerList = await GetSharedPrintersByServerAsync(choice);
 					break;
 				case 3:
-					printerList = GetSharedPrintersByServer(choice).ToList();
+					printerList = await GetSharedPrintersByServerAsync(choice);
 					break;
 				case 4:
-					printerList = GetSharedPrintersByServer(choice).ToList();
+					printerList = await GetSharedPrintersByServerAsync(choice);
 					break;
 				default:
-					MessageBox.Show("Invalid Choice!","Error");
+					MessageBox.Show("Invalid Choice!", "Error");
 					break;
 			}
 			return printerList;
 		}
 
-		private List<string> GetSharedPrintersByServer(int serverNumber)
+		private async Task<List<string>> GetSharedPrintersByServerAsync(int serverNumber)
 		{
-			List<string> sharedPrinters = GetSharedPrinters();
+			List<string> sharedPrinters = await GetSharedPrinters();
 
 			if (sharedPrinters.Count <= 0)
 			{
@@ -70,30 +70,39 @@ namespace PrinterServerTool
 			return serverPrinters;
 		}
 
-		static List<string> GetSharedPrinters()
+		static async Task<List<string>> GetSharedPrinters()
 		{
 			List<string> sharedPrinters = new List<string>();
 
 			using (Process PowerShellProcess = new Process())
 			{
-				PowerShellProcess.StartInfo.FileName = "powershell.exe";
-				PowerShellProcess.StartInfo.RedirectStandardOutput = true;
-				PowerShellProcess.StartInfo.UseShellExecute = false;
-				PowerShellProcess.StartInfo.CreateNoWindow = true;
-				PowerShellProcess.StartInfo.Arguments = "Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | ForEach-Object { $_.Name }";
-
-				PowerShellProcess.Start();
-
-				while (!PowerShellProcess.StandardOutput.EndOfStream)
+				try
 				{
-					string line = PowerShellProcess.StandardOutput.ReadLine();
-					if (!string.IsNullOrEmpty(line))
+					PowerShellProcess.StartInfo.FileName = "powershell.exe";
+					PowerShellProcess.StartInfo.RedirectStandardOutput = true;
+					PowerShellProcess.StartInfo.UseShellExecute = false;
+					PowerShellProcess.StartInfo.CreateNoWindow = true;
+					PowerShellProcess.StartInfo.Arguments = "Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | ForEach-Object { $_.Name }";
+
+					PowerShellProcess.Start();
+
+					while (!PowerShellProcess.StandardOutput.EndOfStream)
 					{
-						sharedPrinters.Add(line);
+						string line = await PowerShellProcess.StandardOutput.ReadLineAsync();
+						if (!string.IsNullOrEmpty(line))
+						{
+							sharedPrinters.Add(line);
+						}
 					}
+
+					await PowerShellProcess.WaitForExitAsync();
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("Error: " + ex.Message);
+					// Handle the exception appropriately
 				}
 			}
-
 			return sharedPrinters;
 		}
 	}
