@@ -24,19 +24,43 @@ namespace PrinterServerTool
 			FillTheCombobox();
 		}
 
+		//private void FillTheCombobox()
+		//{
+		//	cmbOptions.Items.Clear();
+
+		//	cmbOptions.Items.Add("Please Select Server Name");
+		//	cmbOptions.Items.Add("Printer Server 01");
+		//	cmbOptions.Items.Add("Printer Server 02");
+		//	cmbOptions.Items.Add("Printer Server 03");
+		//	cmbOptions.Items.Add("Printer Server 04");
+		//	cmbOptions.Items.Add("Printer Server 05");
+		//	cmbOptions.Items.Add("Printer Server 06");
+
+		//	cmbOptions.SelectedIndex = 0;
+		//}
+
 		private void FillTheCombobox()
 		{
-			cmbOptions.Items.Clear();
+			// Specify the path to your text file
+			string filePath = "D:\\Caironite\\LIA Start\\ProjectOne\\WIndowsForm\\MainProject\\PrinterServerTool\\PrinterServerTool\\PrinterServerTool\\ServerModel\\ServerList.txt";
 
-			cmbOptions.Items.Add("Please Select Server Name");
-			cmbOptions.Items.Add("Printer Server 01");
-			cmbOptions.Items.Add("Printer Server 02");
-			cmbOptions.Items.Add("Printer Server 03");
-			cmbOptions.Items.Add("Printer Server 04");
-			cmbOptions.Items.Add("Printer Server 05");
-			cmbOptions.Items.Add("Printer Server 06");
+			try
+			{
+				// Read server names from the text file
+				string[] serverNames = File.ReadAllLines(filePath);
 
-			cmbOptions.SelectedIndex = 0;
+				cmbOptions.Items.Clear();
+				cmbOptions.Items.AddRange(serverNames);
+
+				if (cmbOptions.Items.Count > 0)
+				{
+					cmbOptions.SelectedIndex = 0;
+				}
+			}
+			catch (IOException ex)
+			{
+				MessageBox.Show($"Error reading the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private bool ReadChoice()
@@ -52,13 +76,13 @@ namespace PrinterServerTool
 			return success;
 		}
 
-		private async void btnSearch_Click(object sender, EventArgs e)
+		private void btnSearch_Click(object sender, EventArgs e)
 		{
 			bool ok = ReadChoice();
 
 			if (ok)
 			{
-				List<string> listOfPrinters = await printerMgt.ShowPrinterMgtAsync();
+				List<string> listOfPrinters = printerMgt.GetSharedPrintersByServer();
 
 				lstOfPrinterName.Items.Clear();
 

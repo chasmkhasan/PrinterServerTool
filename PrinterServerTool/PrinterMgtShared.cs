@@ -21,37 +21,37 @@ namespace PrinterServerTool
 			choice = newChoice;
 		}
 
-		public async Task<List<string>> ShowPrinterMgtAsync()
-		{
-			List<string> printerList = new List<string>();
+		//public async Task<List<string>> ShowPrinterMgtAsync()
+		//{
+		//	List<string> printerList = new List<string>();
 
-			switch (choice)
-			{
-				case 0:
-					printerList = await GetSharedPrintersByServerAsync(choice);
-					break;
-				case 1:
-					printerList = await GetSharedPrintersByServerAsync(choice);
-					break;
-				case 2:
-					printerList = await GetSharedPrintersByServerAsync(choice);
-					break;
-				case 3:
-					printerList = await GetSharedPrintersByServerAsync(choice);
-					break;
-				case 4:
-					printerList = await GetSharedPrintersByServerAsync(choice);
-					break;
-				default:
-					MessageBox.Show("Invalid Choice!", "Error");
-					break;
-			}
-			return printerList;
-		}
+		//	switch (choice)
+		//	{
+		//		case 0:
+		//			printerList = await GetSharedPrintersByServerAsync(choice);
+		//			break;
+		//		case 1:
+		//			printerList = await GetSharedPrintersByServerAsync(choice);
+		//			break;
+		//		case 2:
+		//			printerList = await GetSharedPrintersByServerAsync(choice);
+		//			break;
+		//		case 3:
+		//			printerList = await GetSharedPrintersByServerAsync(choice);
+		//			break;
+		//		case 4:
+		//			printerList = await GetSharedPrintersByServerAsync(choice);
+		//			break;
+		//		default:
+		//			MessageBox.Show("Invalid Choice!", "Error");
+		//			break;
+		//	}
+		//	return printerList;
+		//}
 
-		private async Task<List<string>> GetSharedPrintersByServerAsync(int serverNumber)
+		public List<string> GetSharedPrintersByServer()
 		{
-			List<string> sharedPrinters = await GetSharedPrinters();
+			List<string> sharedPrinters = GetSharedPrinters();
 
 			if (sharedPrinters.Count <= 0)
 			{
@@ -64,13 +64,13 @@ namespace PrinterServerTool
 			foreach (string printer in sharedPrinters)
 			{
 				// Modify the serverPrinters list or perform other actions as needed
-				serverPrinters.Add($"Server {serverNumber}: {printer}");
+				serverPrinters.Add($"Server: {printer}");
 			}
 
 			return serverPrinters;
 		}
 
-		static async Task<List<string>> GetSharedPrinters()
+		static List<string> GetSharedPrinters()
 		{
 			List<string> sharedPrinters = new List<string>();
 
@@ -88,14 +88,14 @@ namespace PrinterServerTool
 
 					while (!PowerShellProcess.StandardOutput.EndOfStream)
 					{
-						string line = await PowerShellProcess.StandardOutput.ReadLineAsync();
+						string line = PowerShellProcess.StandardOutput.ReadLine();
 						if (!string.IsNullOrEmpty(line))
 						{
 							sharedPrinters.Add(line);
 						}
 					}
 
-					await PowerShellProcess.WaitForExitAsync();
+					PowerShellProcess.WaitForExit();
 				}
 				catch (Exception ex)
 				{
