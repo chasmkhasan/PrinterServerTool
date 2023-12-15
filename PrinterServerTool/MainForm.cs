@@ -42,10 +42,16 @@ namespace PrinterServerTool
 		private void FillTheCombobox()
 		{
 			// Specify the path to your text file
-			string filePath = "D:\\Caironite\\LIA Start\\ProjectOne\\WIndowsForm\\MainProject\\PrinterServerTool\\PrinterServerTool\\PrinterServerTool\\ServerModel\\ServerList.txt";
+			string fileName = "ServerList.txt"; // Activated the txt file. Project RightButton/Add/Existing File. Rightbutton on the file/Properties/CopyToOutputDirectory/CopyAlwaysORCopyIfNewer
 
 			try
 			{
+				// Get the current directory
+				string currentDirectory = Directory.GetCurrentDirectory();
+
+				// Combine the current directory with the filename
+				string filePath = Path.Combine(currentDirectory, fileName);
+
 				// Read server names from the text file
 				string[] serverNames = File.ReadAllLines(filePath);
 
