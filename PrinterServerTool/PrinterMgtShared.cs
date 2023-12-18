@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Management.Automation;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Linq;
@@ -70,39 +72,85 @@ namespace PrinterServerTool
 			return serverPrinters;
 		}
 
+		//static List<string> GetSharedPrinters()
+		//{
+		//	List<string> sharedPrinters = new List<string>();
+
+		//	using (Process PowerShellProcess = new Process())
+		//	{
+		//		try
+		//		{
+		//			PowerShellProcess.StartInfo.FileName = "powershell.exe";
+		//			PowerShellProcess.StartInfo.RedirectStandardOutput = true;
+		//			PowerShellProcess.StartInfo.UseShellExecute = false;
+		//			PowerShellProcess.StartInfo.CreateNoWindow = true;
+		//			PowerShellProcess.StartInfo.Arguments = "Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | ForEach-Object { $_.Name }";
+
+		//			PowerShellProcess.Start();
+
+		//			while (!PowerShellProcess.StandardOutput.EndOfStream)
+		//			{
+		//				string line = PowerShellProcess.StandardOutput.ReadLine();
+		//				if (!string.IsNullOrEmpty(line))
+		//				{
+		//					sharedPrinters.Add(line);
+		//				}
+		//			}
+
+		//			PowerShellProcess.WaitForExit();
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			Console.WriteLine("Error: " + ex.Message);
+		//			// Handle the exception appropriately
+		//		}
+		//	}
+		//	return sharedPrinters;
+		//}
+
 		static List<string> GetSharedPrinters()
 		{
 			List<string> sharedPrinters = new List<string>();
 
-			using (Process PowerShellProcess = new Process())
+			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
 				try
 				{
-					PowerShellProcess.StartInfo.FileName = "powershell.exe";
-					PowerShellProcess.StartInfo.RedirectStandardOutput = true;
-					PowerShellProcess.StartInfo.UseShellExecute = false;
-					PowerShellProcess.StartInfo.CreateNoWindow = true;
-					PowerShellProcess.StartInfo.Arguments = "Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | ForEach-Object { $_.Name }";
+					// Use AddScript to add the PowerShell command
+					//PowerShellInstance.AddScript("Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name");
+					//PowerShellInstance.AddScript("Get-WmiObject -PrinterServerTool 'root\\cimv2' -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name"); // Get-WMIObject is for powshell 3.1.0.0 version or later
+					PowerShellInstance.AddScript("Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name"); // Get-CimInstance is for powershell 7.1.0.0 or later version.
 
-					PowerShellProcess.Start();
 
-					while (!PowerShellProcess.StandardOutput.EndOfStream)
+					// Invoke execution on PowerShell
+					Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
+
+					// Check for errors
+					if (PowerShellInstance.HadErrors)
 					{
-						string line = PowerShellProcess.StandardOutput.ReadLine();
-						if (!string.IsNullOrEmpty(line))
+						foreach (ErrorRecord error in PowerShellInstance.Streams.Error)
 						{
-							sharedPrinters.Add(line);
+							MessageBox.Show("PowerShell Error: " + error.Exception.Message);
 						}
 					}
-
-					PowerShellProcess.WaitForExit();
+					else
+					{
+						// Extract results from the PSObject collection
+						foreach (PSObject outputItem in PSOutput)
+						{
+							// Assuming the output is a string, change this according to your actual output type
+							string printerName = outputItem.ToString();
+							sharedPrinters.Add(printerName);
+						}
+					}
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine("Error: " + ex.Message);
+					MessageBox.Show("Error: " + ex.Message);
 					// Handle the exception appropriately
 				}
 			}
+
 			return sharedPrinters;
 		}
 	}
