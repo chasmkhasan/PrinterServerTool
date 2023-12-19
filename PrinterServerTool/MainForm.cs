@@ -82,20 +82,27 @@ namespace PrinterServerTool
 			return success;
 		}
 
-		private void btnSearch_Click(object sender, EventArgs e)
+		private async void btnSearch_Click(object sender, EventArgs e)
 		{
 			bool ok = ReadChoice();
 
 			if (ok)
 			{
-				List<string> listOfPrinters = printerMgt.GetSharedPrintersByServer();
+				List<string> sharedPrinters = await Task.Run(() => printerMgt.GetSharedPrintersAsync());
+
+				MessageBox.Show("Searching for shared printers. Please wait...");
 
 				lstOfPrinterName.Items.Clear();
 
-				foreach (string printerName in listOfPrinters)
+				foreach (string printerName in sharedPrinters)
 				{
-					lstOfPrinterName.Items.Add(printerName);
+					lstOfPrinterName.Items.Add($"Server: {printerName}");
 				}
+			}
+			else
+			{
+				// Inform the user that no shared printers were found
+				MessageBox.Show("No shared printers found.", "Search Results");
 			}
 		}
 

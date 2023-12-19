@@ -51,26 +51,26 @@ namespace PrinterServerTool
 		//	return printerList;
 		//}
 
-		public List<string> GetSharedPrintersByServer()
-		{
-			List<string> sharedPrinters = GetSharedPrinters();
+		//public List<string> GetSharedPrintersByServer()
+		//{
+		//	List<string> sharedPrinters = GetSharedPrinters();
 
-			if (sharedPrinters.Count <= 0)
-			{
-				MessageBox.Show("No shared printers found!");
-				return sharedPrinters;
-			}
+		//	if (sharedPrinters.Count <= 0)
+		//	{
+		//		MessageBox.Show("No shared printers found!");
+		//		return sharedPrinters;
+		//	}
 
-			List<string> serverPrinters = new List<string>();
+		//	List<string> serverPrinters = new List<string>();
 
-			foreach (string printer in sharedPrinters)
-			{
-				// Modify the serverPrinters list or perform other actions as needed
-				serverPrinters.Add($"Server: {printer}");
-			}
+		//	foreach (string printer in sharedPrinters)
+		//	{
+		//		// Modify the serverPrinters list or perform other actions as needed
+		//		serverPrinters.Add($"Server: {printer}");
+		//	}
 
-			return serverPrinters;
-		}
+		//	return serverPrinters;
+		//}
 
 		//static List<string> GetSharedPrinters()
 		//{
@@ -108,7 +108,53 @@ namespace PrinterServerTool
 		//	return sharedPrinters;
 		//}
 
-		static List<string> GetSharedPrinters()
+		//static List<string> GetSharedPrinters()
+		//{
+		//	List<string> sharedPrinters = new List<string>();
+
+		//	using (PowerShell PowerShellInstance = PowerShell.Create())
+		//	{
+		//		try
+		//		{
+		//			// Use AddScript to add the PowerShell command
+		//			//PowerShellInstance.AddScript("Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name");
+		//			//PowerShellInstance.AddScript("Get-WmiObject -PrinterServerTool 'root\\cimv2' -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name"); // Get-WMIObject is for powshell 3.1.0.0 version or later
+		//			PowerShellInstance.AddScript("Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name"); // Get-CimInstance is for powershell 7.1.0.0 or later version.
+
+
+		//			// Invoke execution on PowerShell
+		//			Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
+
+		//			// Check for errors
+		//			if (PowerShellInstance.HadErrors)
+		//			{
+		//				foreach (ErrorRecord error in PowerShellInstance.Streams.Error)
+		//				{
+		//					MessageBox.Show("PowerShell Error: " + error.Exception.Message);
+		//				}
+		//			}
+		//			else
+		//			{
+		//				// Extract results from the PSObject collection
+		//				foreach (PSObject outputItem in PSOutput)
+		//				{
+		//					// Assuming the output is a string, change this according to your actual output type
+		//					string printerName = outputItem.ToString();
+		//					sharedPrinters.Add(printerName);
+		//				}
+		//			}
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			MessageBox.Show("Error: " + ex.Message);
+		//			// Handle the exception appropriately
+		//		}
+		//	}
+
+		//	return sharedPrinters;
+		//}
+
+		public async Task<List<string>> GetSharedPrintersAsync()
 		{
 			List<string> sharedPrinters = new List<string>();
 
@@ -116,16 +162,17 @@ namespace PrinterServerTool
 			{
 				try
 				{
-					// Use AddScript to add the PowerShell command
-					//PowerShellInstance.AddScript("Get-WmiObject -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name");
-					//PowerShellInstance.AddScript("Get-WmiObject -PrinterServerTool 'root\\cimv2' -Query 'SELECT * FROM Win32_Printer WHERE Shared=True' | Select-Object -ExpandProperty Name"); // Get-WMIObject is for powshell 3.1.0.0 version or later
-					PowerShellInstance.AddScript("Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name"); // Get-CimInstance is for powershell 7.1.0.0 or later version.
+					PowerShellInstance.AddScript("Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name");
+
+					// Explicitly cast the result of InvokeAsync to Collection<PSObject>
+
+					//Collection<PSObject> PSOutput = await PowerShellInstance.InvokeAsync(); // Cannot implicitly convert issue - 
+					//Cannot implicitly convert type 'system.Management.Automation.PSDataCollection<System.Management.Automation.PSObject>' to 'System.Collections.ObjectModel.Collection<System.Management.Automation.PsObject>'
+
+					PSDataCollection<PSObject> psDataCollection = await PowerShellInstance.InvokeAsync(); //convert issue solve: reaching the data collection and through psObject.
+					Collection<PSObject> PSOutput = new Collection<PSObject>(psDataCollection);
 
 
-					// Invoke execution on PowerShell
-					Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
-
-					// Check for errors
 					if (PowerShellInstance.HadErrors)
 					{
 						foreach (ErrorRecord error in PowerShellInstance.Streams.Error)
@@ -135,10 +182,8 @@ namespace PrinterServerTool
 					}
 					else
 					{
-						// Extract results from the PSObject collection
 						foreach (PSObject outputItem in PSOutput)
 						{
-							// Assuming the output is a string, change this according to your actual output type
 							string printerName = outputItem.ToString();
 							sharedPrinters.Add(printerName);
 						}
@@ -147,7 +192,6 @@ namespace PrinterServerTool
 				catch (Exception ex)
 				{
 					MessageBox.Show("Error: " + ex.Message);
-					// Handle the exception appropriately
 				}
 			}
 
