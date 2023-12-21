@@ -33,6 +33,7 @@
 			btnInstallPrinter = new Button();
 			btnSearch = new Button();
 			lstOfPrinterName = new ListBox();
+			prgBar = new ProgressBar();
 			SuspendLayout();
 			// 
 			// label1
@@ -83,11 +84,19 @@
 			lstOfPrinterName.Size = new Size(258, 154);
 			lstOfPrinterName.TabIndex = 4;
 			// 
+			// prgBar
+			// 
+			prgBar.Location = new Point(262, 293);
+			prgBar.Name = "prgBar";
+			prgBar.Size = new Size(168, 21);
+			prgBar.TabIndex = 5;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(458, 347);
+			Controls.Add(prgBar);
 			Controls.Add(lstOfPrinterName);
 			Controls.Add(btnSearch);
 			Controls.Add(btnInstallPrinter);
@@ -106,5 +115,6 @@
 		private Button btnInstallPrinter;
 		private Button btnSearch;
 		private ListBox lstOfPrinterName;
+		private ProgressBar prgBar;
 	}
 }
