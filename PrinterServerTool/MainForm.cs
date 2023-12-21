@@ -1,13 +1,14 @@
 using System;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-		//PrinterMgt printerMgt = new PrinterMgt();
-		PrinterMgtShared printerMgt = new PrinterMgtShared();
+		PrinterManagement readPrinter = new PrinterManagement();
+    WaitFormFunc waitForm = new WaitFormFunc();
 
 		public MainForm()
 		{
@@ -21,11 +22,11 @@ namespace PrinterServerTool
 			//change the title of the form.
 
 			this.Text += " Owned by Caironite";
-			FillTheCombobox();
+			DropDownList();
 		}
+    
 		private void DropDownList()
 {
-
 	string fileName = "ServerList.txt"; // Activated the txt file. Rightbutton on the file/Properties/CopyToOutputDirectory/CopyAlwaysORCopyIfNewer
 
 	try
@@ -44,6 +45,7 @@ namespace PrinterServerTool
 
 		if (dropDownOptions.Items.Count > 0)
 		{
+
 			dropDownOptions.SelectedIndex = 0;
 		}
 	}
@@ -55,6 +57,7 @@ namespace PrinterServerTool
 		
 
 		private async void btnSearch_Click(object sender, EventArgs e)
+
 {
 
 	waitForm.Show();
@@ -63,12 +66,13 @@ namespace PrinterServerTool
 	MessageBox.Show("Search Completed successfully.", "Search Result");
 }
 
-private async Task<bool> SearchForPrinters()
+		private async Task<bool> SearchForPrinters()
 {
 	bool result = false;
 
 	List<string> sharedPrinters = await readPrinter.GetSharedPrinters();
 
+	// Update progress bar when the search is complete
 	waitForm.Close();
 
 	// Handle the results
