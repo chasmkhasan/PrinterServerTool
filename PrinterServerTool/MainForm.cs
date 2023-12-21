@@ -26,7 +26,7 @@ namespace PrinterServerTool
 
 		private void DropDownList()
 		{
-			cmbOptions.Items.Clear();
+			string fileName = "ServerList.txt"; // Activated the txt file. Rightbutton on the file/Properties/CopyToOutputDirectory/CopyAlwaysORCopyIfNewer
 
 			try
 			{
@@ -44,7 +44,7 @@ namespace PrinterServerTool
 
 				if (dropDownOptions.Items.Count > 0)
 				{
-					
+
 					dropDownOptions.SelectedIndex = 0;
 				}
 			}
@@ -64,7 +64,9 @@ namespace PrinterServerTool
 
 		}
 
-				lstOfPrinterName.Items.Clear();
+		private async Task<bool> SearchForPrinters()
+		{
+			bool result = false;
 
 			List<string> sharedPrinters = await readPrinter.GetSharedPrinters();
 
@@ -101,9 +103,6 @@ namespace PrinterServerTool
 				MessageBox.Show("Under Process", "Error");
 			}
 		}
-
-
-
 
 
 		//private bool ReadChoice() // its needed for indexing when install.
