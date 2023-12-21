@@ -6,8 +6,8 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-		//PrinterMgt printerMgt = new PrinterMgt();
-		PrinterMgtShared printerMgt = new PrinterMgtShared();
+		PrinterManagement readPrinter = new PrinterManagement();
+		WaitFormFunc waitForm = new WaitFormFunc();
 
 		public MainForm()
 		{
@@ -21,60 +21,102 @@ namespace PrinterServerTool
 			//change the title of the form.
 
 			this.Text += " Owned by Caironite";
-			FillTheCombobox();
+			DropDownList();
 		}
 
-		private void FillTheCombobox()
+		private void DropDownList()
 		{
 			cmbOptions.Items.Clear();
 
-			cmbOptions.Items.Add("Please Select Server Name");
-			cmbOptions.Items.Add("Printer Server 01");
-			cmbOptions.Items.Add("Printer Server 02");
-			cmbOptions.Items.Add("Printer Server 03");
-			cmbOptions.Items.Add("Printer Server 04");
-			cmbOptions.Items.Add("Printer Server 05");
-			cmbOptions.Items.Add("Printer Server 06");
-
-			cmbOptions.SelectedIndex = 0;
-		}
-
-		private bool ReadChoice()
-		{
-			bool success = false;
-			int index = cmbOptions.SelectedIndex;
-
-			if (index >= 0)
+			try
 			{
-				printerMgt.SetChoice(index);
-				success = true;
+				// Get the current directory
+				string currentDirectory = Directory.GetCurrentDirectory();
+
+				// Combine the current directory with the filename
+				string filePath = Path.Combine(currentDirectory, fileName);
+
+				// Read server names from the text file
+				string[] serverNames = File.ReadAllLines(filePath);
+
+				dropDownOptions.Items.Clear();
+				dropDownOptions.Items.AddRange(serverNames);
+
+				if (dropDownOptions.Items.Count > 0)
+				{
+					
+					dropDownOptions.SelectedIndex = 0;
+				}
 			}
-			return success;
+			catch (IOException ex)
+			{
+				MessageBox.Show($"Error reading the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private async void btnSearch_Click(object sender, EventArgs e)
 		{
-			bool ok = ReadChoice();
+			//Start ProgressBar
+			waitForm.Show();
 
-			if (ok)
-			{
-				List<string> listOfPrinters = await printerMgt.ShowPrinterMgtAsync();
+			await SearchForPrinters();
+			MessageBox.Show("Search Completed successfully.", "Search Result");
+
+		}
 
 				lstOfPrinterName.Items.Clear();
 
-				foreach (string printerName in listOfPrinters)
+			List<string> sharedPrinters = await readPrinter.GetSharedPrinters();
+
+			// Update progress bar when the search is complete
+			waitForm.Close();
+
+			// Handle the results
+			if (sharedPrinters.Count > 0)
+			{
+				// Show the shared printers to the user
+				foreach (string printerName in sharedPrinters)
 				{
-					lstOfPrinterName.Items.Add(printerName);
+					// Use Invoke to add items to the ListBox on the UI thread
+					if (lstOfPrinterName.InvokeRequired)
+					{
+						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Server: {printerName}")));
+					}
+					else
+					{
+						lstOfPrinterName.Items.Add($"Server: {printerName}");
+					}
 				}
+
+				result = true;
 			}
+
+			return result;
 		}
 
-		private void btnInstallPrinter_Click(object sender, EventArgs e)
+		private void btnInstall_Click(object sender, EventArgs e)
 		{
-			if (printerMgt != null)
+			if (readPrinter != null)
 			{
 				MessageBox.Show("Under Process", "Error");
 			}
 		}
+
+
+
+
+
+		//private bool ReadChoice() // its needed for indexing when install.
+		//{
+		//	bool success = false;
+		//	int index = dropDownOptions.SelectedIndex;
+
+		//	if (index >= 0)
+		//	{
+		//		readPrinter.SetChoice(index);
+		//		success = true;
+		//	}
+		//	return success;
+		//}
 	}
 }
