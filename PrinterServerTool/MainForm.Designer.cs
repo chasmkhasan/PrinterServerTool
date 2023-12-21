@@ -155,5 +155,6 @@
 		private Button btnSearch;
 		private Button btnInstall;
 		private ListBox lstOfPrinterName;
+		private ProgressBar prgBar;
 	}
 }
