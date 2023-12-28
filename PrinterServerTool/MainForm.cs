@@ -60,20 +60,30 @@ namespace PrinterServerTool
 			//Start ProgressBar
 			waitForm.Show();
 
-			await SearchForPrinters();
-			MessageBox.Show("Search Completed successfully.", "Search Result");
+			lstOfPrinterName.Items.Clear();
 
+			var watch = System.Diagnostics.Stopwatch.StartNew(); // Timing Start
+
+			await Task.Run(async () =>
+			{
+				await SearchForPrintersAsync();
+			});
+
+			watch.Stop(); // timing end
+			var elapsedMs = watch.ElapsedMilliseconds; // Calculating time Will delete on demand
+			lstOfPrinterName.Items.Add($"Total execution time: {elapsedMs}");
+
+			waitForm.Close();
+
+			MessageBox.Show("Search Completed successfully.", "Search Result");
 		}
 
-		private async Task<bool> SearchForPrinters()
+		private async Task<bool> SearchForPrintersAsync()
 		{
 			bool result = false;
 
-			List<string> sharedPrinters = await readPrinter.GetSharedPrinters();
-
-			// Update progress bar when the search is complete
-			waitForm.Close();
-
+			List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync();
+			
 			// Handle the results
 			if (sharedPrinters.Count > 0)
 			{
@@ -83,11 +93,11 @@ namespace PrinterServerTool
 					// Use Invoke to add items to the ListBox on the UI thread
 					if (lstOfPrinterName.InvokeRequired)
 					{
-						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Server: {printerName}")));
+						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Printer: {printerName}")));
 					}
 					else
 					{
-						lstOfPrinterName.Items.Add($"Server: {printerName}");
+						lstOfPrinterName.Items.Add($"Printer: {printerName}");
 					}
 				}
 

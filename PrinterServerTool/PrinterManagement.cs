@@ -21,41 +21,60 @@ namespace PrinterServerTool
 			choice = newChoice;
 		}
 
-		public Task<List<string>> GetSharedPrinters()
+		public async Task<List<string>> GetSharedPrintersAsync()
 		{
 			List<string> sharedPrinters = new List<string>();
+
+			try
+			{
+				string script = "Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name";
+
+				var tasks = new List<Task<List<string>>>();
+
+				for (int i = 0; i < Environment.ProcessorCount; i++)
+				{
+					tasks.Add(Task.Run(() => ExecutePowerShellScript(script)));
+				}
+
+				await Task.WhenAll(tasks).ConfigureAwait(false);
+
+				// Combine and deduplicate results from all tasks into a single list
+				var uniqueResults = tasks.SelectMany(task => task.Result).Distinct();
+
+				// Add the unique results to the sharedPrinters list
+				sharedPrinters.AddRange(uniqueResults);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Error: " + ex.Message);
+			}
+
+			return sharedPrinters;
+		}
+
+		private List<string> ExecutePowerShellScript(string script)
+		{
+			List<string> results = new List<string>();
 
 			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
 				try
 				{
-					PowerShellInstance.AddScript("Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name");
-
+					PowerShellInstance.AddScript(script);
 					Collection<PSObject> psDataCollection = PowerShellInstance.Invoke();
 
-					if (PowerShellInstance.HadErrors)
+					foreach (PSObject outputItem in psDataCollection)
 					{
-						foreach (ErrorRecord error in PowerShellInstance.Streams.Error)
-						{
-							MessageBox.Show("PowerShell Error: " + error.Exception.Message);
-						}
-					}
-					else
-					{
-						foreach (PSObject outputItem in psDataCollection)
-						{
-							string printerName = outputItem.ToString();
-							sharedPrinters.Add(printerName);
-						}
+						results.Add(outputItem.ToString());
 					}
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show("Error: " + ex.Message);
+					MessageBox.Show("PowerShell Error: " + ex.Message);
 				}
 			}
 
-			return Task.FromResult(sharedPrinters);
+			return results;
 		}
 	}
 }
