@@ -58,24 +58,24 @@ namespace PrinterServerTool
 		private async void btnSearch_Click(object sender, EventArgs e)
 		{
 			//Start ProgressBar
-			waitForm.Show();
+			//waitForm.Show();
 
 			lstOfPrinterName.Items.Clear();
 
-			var watch = System.Diagnostics.Stopwatch.StartNew(); // Timing Start
+			//var watch = System.Diagnostics.Stopwatch.StartNew(); // Timing Start
 
-			await Task.Run(async () =>
+			_ = Task.Run(async () =>
 			{
 				await SearchForPrintersAsync();
 			});
 
-			watch.Stop(); // timing end
-			var elapsedMs = watch.ElapsedMilliseconds; // Calculating time Will delete on demand
-			lstOfPrinterName.Items.Add($"Total execution time: {elapsedMs}");
+			//watch.Stop(); // timing end
+			//var elapsedMs = watch.ElapsedMilliseconds; // Calculating time Will delete on demand
+			//lstOfPrinterName.Items.Add($"Total execution time: {elapsedMs}");
 
 			waitForm.Close();
 
-			MessageBox.Show("Search Completed successfully.", "Search Result");
+			//MessageBox.Show("Search Completed successfully.", "Search Result");
 		}
 
 		private async Task<bool> SearchForPrintersAsync()
@@ -83,7 +83,7 @@ namespace PrinterServerTool
 			bool result = false;
 
 			List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync();
-			
+
 			// Handle the results
 			if (sharedPrinters.Count > 0)
 			{
