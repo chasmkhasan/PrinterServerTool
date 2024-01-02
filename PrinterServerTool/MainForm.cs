@@ -61,7 +61,7 @@ namespace PrinterServerTool
 
 			gifBox.Visible = false;
 
-			// Start the spinning progress GIF
+			//// Start the spinning progress GIF
 			gifBox.Image = Properties.Resources.Spinning_fangs; // "loading" is the name of your GIF resource
 			gifBox.SizeMode = PictureBoxSizeMode.CenterImage;
 			gifBox.Visible = true;
@@ -76,36 +76,51 @@ namespace PrinterServerTool
 			//watch.Stop(); // timing end
 			//var elapsedMs = watch.ElapsedMilliseconds; // Calculating time Will delete on demand
 			//lstOfPrinterName.Items.Add($"Total execution time: {elapsedMs}");
-
-			gifBox.Visible = false;
-
-			MessageBox.Show("Search Completed successfully.", "Search Result");
 		}
 
 		private async Task<bool> SearchForPrintersAsync()
 		{
 			bool result = false;
 
-			List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync();
-
-			// Handle the results
-			if (sharedPrinters.Count > 0)
+			try
 			{
-				// Show the shared printers to the user
-				foreach (string printerName in sharedPrinters)
+				List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync();
+
+				// Handle the results
+				if (sharedPrinters.Count > 0)
 				{
-					// Use Invoke to add items to the ListBox on the UI thread
-					if (lstOfPrinterName.InvokeRequired)
+					// Show the shared printers to the user
+					foreach (string printerName in sharedPrinters)
 					{
-						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Printer: {printerName}")));
+						// Use Invoke to add items to the ListBox on the UI thread
+						if (lstOfPrinterName.InvokeRequired)
+						{
+							lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Printer: {printerName}")));
+						}
+						else
+						{
+							lstOfPrinterName.Items.Add($"Printer: {printerName}");
+						}
+					}
+
+					if (gifBox.InvokeRequired)
+					{
+						gifBox.Invoke(new Action(() => gifBox.Visible = false));
 					}
 					else
 					{
-						lstOfPrinterName.Items.Add($"Printer: {printerName}");
+						gifBox.Visible = false;
 					}
-				}
 
-				result = true;
+					MessageBox.Show("Search Completed successfully.", "Search Result");
+
+					result = true;
+				}
+			}
+			
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred: {ex.Message}", "Error");
 			}
 
 			return result;
