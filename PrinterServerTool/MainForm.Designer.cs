@@ -35,8 +35,10 @@
 			btnInstall = new Button();
 			lstOfPrinterName = new ListBox();
 			label1 = new Label();
+			gifBox = new PictureBox();
 			tableLayoutPanel1.SuspendLayout();
 			tableLayoutPanel2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)gifBox).BeginInit();
 			SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -66,6 +68,7 @@
 			tableLayoutPanel2.Controls.Add(btnInstall, 0, 3);
 			tableLayoutPanel2.Controls.Add(lstOfPrinterName, 0, 2);
 			tableLayoutPanel2.Controls.Add(label1, 0, 0);
+			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
 			tableLayoutPanel2.Dock = DockStyle.Fill;
 			tableLayoutPanel2.Location = new Point(22, 20);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -132,6 +135,16 @@
 			label1.TabIndex = 0;
 			label1.Text = "Welcome To Shared Printer";
 			// 
+			// gifBox
+			// 
+			gifBox.Anchor = AnchorStyles.None;
+			gifBox.Image = Properties.Resources.Spinning_fangs;
+			gifBox.Location = new Point(312, 128);
+			gifBox.Name = "gifBox";
+			gifBox.Size = new Size(66, 66);
+			gifBox.TabIndex = 5;
+			gifBox.TabStop = false;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
@@ -143,6 +156,7 @@
 			tableLayoutPanel1.ResumeLayout(false);
 			tableLayoutPanel2.ResumeLayout(false);
 			tableLayoutPanel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)gifBox).EndInit();
 			ResumeLayout(false);
 		}
 
@@ -156,5 +170,6 @@
 		private Button btnInstall;
 		private ListBox lstOfPrinterName;
 		private ProgressBar prgBar;
+		private PictureBox gifBox;
 	}
 }

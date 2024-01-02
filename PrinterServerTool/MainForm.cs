@@ -8,7 +8,6 @@ namespace PrinterServerTool
 	public partial class MainForm : Form
 	{
 		PrinterManagement readPrinter = new PrinterManagement();
-		WaitFormFunc waitForm = new WaitFormFunc();
 
 		public MainForm()
 		{
@@ -57,10 +56,15 @@ namespace PrinterServerTool
 
 		private async void btnSearch_Click(object sender, EventArgs e)
 		{
-			//Start ProgressBar
-			//waitForm.Show();
-
+			
 			lstOfPrinterName.Items.Clear();
+
+			gifBox.Visible = false;
+
+			// Start the spinning progress GIF
+			gifBox.Image = Properties.Resources.Spinning_fangs; // "loading" is the name of your GIF resource
+			gifBox.SizeMode = PictureBoxSizeMode.CenterImage;
+			gifBox.Visible = true;
 
 			//var watch = System.Diagnostics.Stopwatch.StartNew(); // Timing Start
 
@@ -73,9 +77,9 @@ namespace PrinterServerTool
 			//var elapsedMs = watch.ElapsedMilliseconds; // Calculating time Will delete on demand
 			//lstOfPrinterName.Items.Add($"Total execution time: {elapsedMs}");
 
-			waitForm.Close();
+			gifBox.Visible = false;
 
-			//MessageBox.Show("Search Completed successfully.", "Search Result");
+			MessageBox.Show("Search Completed successfully.", "Search Result");
 		}
 
 		private async Task<bool> SearchForPrintersAsync()
