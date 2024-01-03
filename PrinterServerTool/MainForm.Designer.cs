@@ -144,11 +144,13 @@
 			gifBox.Size = new Size(66, 66);
 			gifBox.TabIndex = 5;
 			gifBox.TabStop = false;
+			gifBox.Visible = false;
 			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
+			BackColor = SystemColors.ControlLightLight;
 			ClientSize = new Size(458, 347);
 			Controls.Add(tableLayoutPanel1);
 			Name = "MainForm";

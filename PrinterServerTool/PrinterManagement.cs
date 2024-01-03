@@ -33,7 +33,12 @@ namespace PrinterServerTool
 
 				for (int i = 0; i < Environment.ProcessorCount; i++)
 				{
-					tasks.Add(Task.Run(() => ExecutePowerShellScript(script)));
+					tasks.Add(new Task<List<string>>(() => ExecutePowerShellScript(script)));
+				}
+
+				foreach (var task in tasks)
+				{
+					task.Start();
 				}
 
 				await Task.WhenAll(tasks).ConfigureAwait(false);

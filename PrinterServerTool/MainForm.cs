@@ -54,12 +54,10 @@ namespace PrinterServerTool
 			}
 		}
 
-		private async void btnSearch_Click(object sender, EventArgs e)
+		private void btnSearch_Click(object sender, EventArgs e)
 		{
 			
 			lstOfPrinterName.Items.Clear();
-
-			gifBox.Visible = false;
 
 			//// Start the spinning progress GIF
 			gifBox.Image = Properties.Resources.Spinning_fangs; // "loading" is the name of your GIF resource
