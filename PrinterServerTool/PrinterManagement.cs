@@ -28,27 +28,8 @@ namespace PrinterServerTool
 			try
 			{
 				string script = "Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name";
-
-				var tasks = new List<Task<List<string>>>();
-
-				for (int i = 0; i < Environment.ProcessorCount; i++)
-				{
-					tasks.Add(new Task<List<string>>(() => ExecutePowerShellScript(script)));
-				}
-
-				foreach (var task in tasks)
-				{
-					task.Start();
-				}
-
-				await Task.WhenAll(tasks).ConfigureAwait(false);
-
-				// Combine and deduplicate results from all tasks into a single list
-				var uniqueResults = tasks.SelectMany(task => task.Result).Distinct();
-
-				// Add the unique results to the sharedPrinters list
-				sharedPrinters.AddRange(uniqueResults);
-			}
+                sharedPrinters = ExecutePowerShellScript(script);
+            }
 			catch (Exception ex)
 			{
 				MessageBox.Show("Error: " + ex.Message);
