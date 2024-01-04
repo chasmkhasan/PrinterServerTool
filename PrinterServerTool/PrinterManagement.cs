@@ -21,15 +21,27 @@ namespace PrinterServerTool
 			choice = newChoice;
 		}
 
-		public async Task<List<string>> GetSharedPrintersAsync()
+		public async Task<List<PrinterDataModel>> GetSharedPrintersAsync()
 		{
-			List<string> sharedPrinters = new List<string>();
+			List<PrinterDataModel> sharedPrinters = new List<PrinterDataModel>();
 
 			try
 			{
-				string script = "Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name";
-                sharedPrinters = ExecutePowerShellScript(script);
-            }
+				string script = @"Get-CimInstance -ClassName Win32_Printer |
+								Where-Object { $_.Shared -eq $true } |
+								Select-Object Name, ShareName, DriverName, PortName, Location";
+
+				sharedPrinters = ExecutePowerShellScript(script)
+					.Select(printerData => new PrinterDataModel
+					{
+						PrinterName = printerData["Name"] as string,
+						ShareName = printerData["ShareName"] as string,
+						DriverName = printerData["DriverName"] as string,
+						PortName = printerData["PortName"] as string,
+						Location = printerData["Location"] as string
+					})
+					.ToList();
+			}
 			catch (Exception ex)
 			{
 				MessageBox.Show("Error: " + ex.Message);
@@ -38,9 +50,9 @@ namespace PrinterServerTool
 			return sharedPrinters;
 		}
 
-		private List<string> ExecutePowerShellScript(string script)
+		private List<Dictionary<string, object>> ExecutePowerShellScript(string script)
 		{
-			List<string> results = new List<string>();
+			List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
 
 			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
@@ -51,7 +63,10 @@ namespace PrinterServerTool
 
 					foreach (PSObject outputItem in psDataCollection)
 					{
-						results.Add(outputItem.ToString());
+						Dictionary<string, object> properties = outputItem.Properties
+							.ToDictionary(p => p.Name, p => p.Value);
+
+						results.Add(properties);
 					}
 				}
 				catch (Exception ex)

@@ -54,9 +54,9 @@ namespace PrinterServerTool
 			}
 		}
 
-		private void btnSearch_Click(object sender, EventArgs e)
+		private async void btnSearch_Click(object sender, EventArgs e)
 		{
-			
+
 			lstOfPrinterName.Items.Clear();
 
 			//// Start the spinning progress GIF
@@ -82,40 +82,42 @@ namespace PrinterServerTool
 
 			try
 			{
-				List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync();
+				List<PrinterDataModel> sharedPrinterData = await readPrinter.GetSharedPrintersAsync();
 
-				// Handle the results
-				if (sharedPrinters.Count > 0)
+				PrinterDataModel printerDataModelInstance = new PrinterDataModel(); // Replace this with the actual instance
+
+				List<string> sharedPrinters = sharedPrinterData.Select(printerDataModel =>
+					//$"Server: {printerDataModel.ShareName}, Printer: {printerDataModel.PrinterName}, DriverName: {printerDataModel.DriverName}, PortName: {printerDataModel.PortName}, Location: {printerDataModel.Location}")
+					$"Printer: {printerDataModel.PrinterName}, DriverName: {printerDataModel.DriverName}, PortName: {printerDataModel.PortName}")
+						.ToList();
+
+				foreach (string printerInfo in sharedPrinters)
 				{
-					// Show the shared printers to the user
-					foreach (string printerName in sharedPrinters)
+					if (lstOfPrinterName.InvokeRequired)
 					{
-						// Use Invoke to add items to the ListBox on the UI thread
-						if (lstOfPrinterName.InvokeRequired)
-						{
-							lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Printer: {printerName}")));
-						}
-						else
-						{
-							lstOfPrinterName.Items.Add($"Printer: {printerName}");
-						}
-					}
-
-					if (gifBox.InvokeRequired)
-					{
-						gifBox.Invoke(new Action(() => gifBox.Visible = false));
+						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add(printerInfo)));
 					}
 					else
 					{
-						gifBox.Visible = false;
+						lstOfPrinterName.Items.Add(printerInfo);
 					}
-
-					MessageBox.Show("Search Completed successfully.", "Search Result");
-
-					result = true;
 				}
+
+
+				if (gifBox.InvokeRequired)
+				{
+					gifBox.Invoke(new Action(() => gifBox.Visible = false));
+				}
+				else
+				{
+					gifBox.Visible = false;
+				}
+
+				MessageBox.Show("Search Completed successfully.", "Search Result");
+
+				result = true;
 			}
-			
+
 			catch (Exception ex)
 			{
 				MessageBox.Show($"An error occurred: {ex.Message}", "Error");
@@ -124,12 +126,10 @@ namespace PrinterServerTool
 			return result;
 		}
 
-		private void btnInstall_Click(object sender, EventArgs e)
+
+		private async void btnInstall_Click(object sender, EventArgs e)
 		{
-			if (readPrinter != null)
-			{
-				MessageBox.Show("Under Process", "Error");
-			}
+			
 		}
 
 

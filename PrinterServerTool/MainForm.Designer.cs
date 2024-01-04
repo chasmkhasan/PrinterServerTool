@@ -55,14 +55,14 @@
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5.214724F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 94.78528F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new Size(458, 347);
+			tableLayoutPanel1.Size = new Size(590, 354);
 			tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
 			// 
 			tableLayoutPanel2.ColumnCount = 2;
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67.47573F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32.5242729F));
+			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 77.55102F));
+			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 22.44898F));
 			tableLayoutPanel2.Controls.Add(dropDownOptions, 0, 1);
 			tableLayoutPanel2.Controls.Add(btnSearch, 1, 1);
 			tableLayoutPanel2.Controls.Add(btnInstall, 0, 3);
@@ -70,14 +70,14 @@
 			tableLayoutPanel2.Controls.Add(label1, 0, 0);
 			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
 			tableLayoutPanel2.Dock = DockStyle.Fill;
-			tableLayoutPanel2.Location = new Point(22, 20);
+			tableLayoutPanel2.Location = new Point(27, 20);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
 			tableLayoutPanel2.RowCount = 4;
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 47.0588226F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 52.9411774F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 221F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-			tableLayoutPanel2.Size = new Size(412, 303);
+			tableLayoutPanel2.Size = new Size(539, 310);
 			tableLayoutPanel2.TabIndex = 0;
 			// 
 			// dropDownOptions
@@ -85,7 +85,7 @@
 			dropDownOptions.Anchor = AnchorStyles.None;
 			dropDownOptions.Cursor = Cursors.Hand;
 			dropDownOptions.FormattingEnabled = true;
-			dropDownOptions.Location = new Point(40, 27);
+			dropDownOptions.Location = new Point(110, 31);
 			dropDownOptions.Name = "dropDownOptions";
 			dropDownOptions.Size = new Size(197, 23);
 			dropDownOptions.TabIndex = 1;
@@ -94,7 +94,7 @@
 			// 
 			btnSearch.Anchor = AnchorStyles.None;
 			btnSearch.Cursor = Cursors.Hand;
-			btnSearch.Location = new Point(307, 27);
+			btnSearch.Location = new Point(441, 32);
 			btnSearch.Name = "btnSearch";
 			btnSearch.Size = new Size(75, 21);
 			btnSearch.TabIndex = 2;
@@ -106,7 +106,7 @@
 			// 
 			btnInstall.Anchor = AnchorStyles.None;
 			btnInstall.Cursor = Cursors.Hand;
-			btnInstall.Location = new Point(101, 276);
+			btnInstall.Location = new Point(171, 283);
 			btnInstall.Name = "btnInstall";
 			btnInstall.Size = new Size(75, 23);
 			btnInstall.TabIndex = 3;
@@ -120,16 +120,16 @@
 			lstOfPrinterName.Cursor = Cursors.Hand;
 			lstOfPrinterName.FormattingEnabled = true;
 			lstOfPrinterName.ItemHeight = 15;
-			lstOfPrinterName.Location = new Point(41, 69);
+			lstOfPrinterName.Location = new Point(28, 76);
 			lstOfPrinterName.Name = "lstOfPrinterName";
-			lstOfPrinterName.Size = new Size(196, 184);
+			lstOfPrinterName.Size = new Size(362, 184);
 			lstOfPrinterName.TabIndex = 4;
 			// 
 			// label1
 			// 
 			label1.Anchor = AnchorStyles.None;
 			label1.AutoSize = true;
-			label1.Location = new Point(64, 4);
+			label1.Location = new Point(134, 6);
 			label1.Name = "label1";
 			label1.Size = new Size(149, 15);
 			label1.TabIndex = 0;
@@ -139,7 +139,7 @@
 			// 
 			gifBox.Anchor = AnchorStyles.None;
 			gifBox.Image = Properties.Resources.Spinning_fangs;
-			gifBox.Location = new Point(312, 128);
+			gifBox.Location = new Point(445, 135);
 			gifBox.Name = "gifBox";
 			gifBox.Size = new Size(66, 66);
 			gifBox.TabIndex = 5;
@@ -151,7 +151,7 @@
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = SystemColors.ControlLightLight;
-			ClientSize = new Size(458, 347);
+			ClientSize = new Size(590, 354);
 			Controls.Add(tableLayoutPanel1);
 			Name = "MainForm";
 			Text = "Printer's Tool";
