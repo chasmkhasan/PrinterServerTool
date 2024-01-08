@@ -32,13 +32,16 @@
 			tableLayoutPanel2 = new TableLayoutPanel();
 			dropDownOptions = new ComboBox();
 			btnSearch = new Button();
-			btnInstall = new Button();
 			lstOfPrinterName = new ListBox();
 			label1 = new Label();
 			gifBox = new PictureBox();
+			tableLayoutPanel3 = new TableLayoutPanel();
+			btnInstallPrinter = new Button();
+			btnPrinterRemove = new Button();
 			tableLayoutPanel1.SuspendLayout();
 			tableLayoutPanel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)gifBox).BeginInit();
+			tableLayoutPanel3.SuspendLayout();
 			SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -55,29 +58,29 @@
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5.214724F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 94.78528F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new Size(590, 354);
+			tableLayoutPanel1.Size = new Size(477, 354);
 			tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
 			// 
+			tableLayoutPanel2.Anchor = AnchorStyles.None;
 			tableLayoutPanel2.ColumnCount = 2;
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 77.55102F));
-			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 22.44898F));
+			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 77.84553F));
+			tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 22.1544724F));
 			tableLayoutPanel2.Controls.Add(dropDownOptions, 0, 1);
 			tableLayoutPanel2.Controls.Add(btnSearch, 1, 1);
-			tableLayoutPanel2.Controls.Add(btnInstall, 0, 3);
 			tableLayoutPanel2.Controls.Add(lstOfPrinterName, 0, 2);
 			tableLayoutPanel2.Controls.Add(label1, 0, 0);
 			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
-			tableLayoutPanel2.Dock = DockStyle.Fill;
-			tableLayoutPanel2.Location = new Point(27, 20);
+			tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 3);
+			tableLayoutPanel2.Location = new Point(22, 20);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
 			tableLayoutPanel2.RowCount = 4;
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 47.0588226F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 52.9411774F));
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 221F));
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-			tableLayoutPanel2.Size = new Size(539, 310);
+			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 212F));
+			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
+			tableLayoutPanel2.Size = new Size(431, 310);
 			tableLayoutPanel2.TabIndex = 0;
 			// 
 			// dropDownOptions
@@ -85,7 +88,7 @@
 			dropDownOptions.Anchor = AnchorStyles.None;
 			dropDownOptions.Cursor = Cursors.Hand;
 			dropDownOptions.FormattingEnabled = true;
-			dropDownOptions.Location = new Point(110, 31);
+			dropDownOptions.Location = new Point(69, 31);
 			dropDownOptions.Name = "dropDownOptions";
 			dropDownOptions.Size = new Size(197, 23);
 			dropDownOptions.TabIndex = 1;
@@ -94,7 +97,7 @@
 			// 
 			btnSearch.Anchor = AnchorStyles.None;
 			btnSearch.Cursor = Cursors.Hand;
-			btnSearch.Location = new Point(441, 32);
+			btnSearch.Location = new Point(345, 32);
 			btnSearch.Name = "btnSearch";
 			btnSearch.Size = new Size(75, 21);
 			btnSearch.TabIndex = 2;
@@ -102,34 +105,22 @@
 			btnSearch.UseVisualStyleBackColor = true;
 			btnSearch.Click += btnSearch_Click;
 			// 
-			// btnInstall
-			// 
-			btnInstall.Anchor = AnchorStyles.None;
-			btnInstall.Cursor = Cursors.Hand;
-			btnInstall.Location = new Point(171, 283);
-			btnInstall.Name = "btnInstall";
-			btnInstall.Size = new Size(75, 23);
-			btnInstall.TabIndex = 3;
-			btnInstall.Text = "Install";
-			btnInstall.UseVisualStyleBackColor = true;
-			btnInstall.Click += btnInstall_Click;
-			// 
 			// lstOfPrinterName
 			// 
 			lstOfPrinterName.Anchor = AnchorStyles.None;
 			lstOfPrinterName.Cursor = Cursors.Hand;
 			lstOfPrinterName.FormattingEnabled = true;
 			lstOfPrinterName.ItemHeight = 15;
-			lstOfPrinterName.Location = new Point(28, 76);
+			lstOfPrinterName.Location = new Point(9, 72);
 			lstOfPrinterName.Name = "lstOfPrinterName";
-			lstOfPrinterName.Size = new Size(362, 184);
+			lstOfPrinterName.Size = new Size(317, 184);
 			lstOfPrinterName.TabIndex = 4;
 			// 
 			// label1
 			// 
 			label1.Anchor = AnchorStyles.None;
 			label1.AutoSize = true;
-			label1.Location = new Point(134, 6);
+			label1.Location = new Point(93, 6);
 			label1.Name = "label1";
 			label1.Size = new Size(149, 15);
 			label1.TabIndex = 0;
@@ -139,19 +130,56 @@
 			// 
 			gifBox.Anchor = AnchorStyles.None;
 			gifBox.Image = Properties.Resources.Spinning_fangs;
-			gifBox.Location = new Point(445, 135);
+			gifBox.Location = new Point(350, 131);
 			gifBox.Name = "gifBox";
 			gifBox.Size = new Size(66, 66);
 			gifBox.TabIndex = 5;
 			gifBox.TabStop = false;
 			gifBox.Visible = false;
 			// 
+			// tableLayoutPanel3
+			// 
+			tableLayoutPanel3.ColumnCount = 2;
+			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanel3.Controls.Add(btnInstallPrinter, 0, 0);
+			tableLayoutPanel3.Controls.Add(btnPrinterRemove, 1, 0);
+			tableLayoutPanel3.Dock = DockStyle.Fill;
+			tableLayoutPanel3.Location = new Point(3, 273);
+			tableLayoutPanel3.Name = "tableLayoutPanel3";
+			tableLayoutPanel3.RowCount = 1;
+			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+			tableLayoutPanel3.Size = new Size(329, 34);
+			tableLayoutPanel3.TabIndex = 6;
+			// 
+			// btnInstallPrinter
+			// 
+			btnInstallPrinter.Anchor = AnchorStyles.None;
+			btnInstallPrinter.Location = new Point(29, 3);
+			btnInstallPrinter.Name = "btnInstallPrinter";
+			btnInstallPrinter.Size = new Size(105, 28);
+			btnInstallPrinter.TabIndex = 0;
+			btnInstallPrinter.Text = "Install";
+			btnInstallPrinter.UseVisualStyleBackColor = true;
+			btnInstallPrinter.Click += btnInstallPrinter_Click;
+			// 
+			// btnPrinterRemove
+			// 
+			btnPrinterRemove.Anchor = AnchorStyles.None;
+			btnPrinterRemove.Location = new Point(186, 3);
+			btnPrinterRemove.Name = "btnPrinterRemove";
+			btnPrinterRemove.Size = new Size(121, 28);
+			btnPrinterRemove.TabIndex = 1;
+			btnPrinterRemove.Text = "Remove";
+			btnPrinterRemove.UseVisualStyleBackColor = true;
+			btnPrinterRemove.Click += btnPrinterRemove_Click;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = SystemColors.ControlLightLight;
-			ClientSize = new Size(590, 354);
+			ClientSize = new Size(477, 354);
 			Controls.Add(tableLayoutPanel1);
 			Name = "MainForm";
 			Text = "Printer's Tool";
@@ -159,6 +187,7 @@
 			tableLayoutPanel2.ResumeLayout(false);
 			tableLayoutPanel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)gifBox).EndInit();
+			tableLayoutPanel3.ResumeLayout(false);
 			ResumeLayout(false);
 		}
 
@@ -169,9 +198,11 @@
 		private Label label1;
 		private ComboBox dropDownOptions;
 		private Button btnSearch;
-		private Button btnInstall;
 		private ListBox lstOfPrinterName;
 		private ProgressBar prgBar;
 		private PictureBox gifBox;
+		private TableLayoutPanel tableLayoutPanel3;
+		private Button btnInstallPrinter;
+		private Button btnPrinterRemove;
 	}
 }

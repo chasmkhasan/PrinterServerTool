@@ -1,5 +1,8 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.Management.Automation;
+using System.Reflection;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -8,6 +11,7 @@ namespace PrinterServerTool
 	public partial class MainForm : Form
 	{
 		PrinterManagement readPrinter = new PrinterManagement();
+		PrinterDataModel model = new PrinterDataModel();
 
 		public MainForm()
 		{
@@ -88,7 +92,7 @@ namespace PrinterServerTool
 
 				List<string> sharedPrinters = sharedPrinterData.Select(printerDataModel =>
 					//$"Server: {printerDataModel.ShareName}, Printer: {printerDataModel.PrinterName}, DriverName: {printerDataModel.DriverName}, PortName: {printerDataModel.PortName}, Location: {printerDataModel.Location}")
-					$"Printer: {printerDataModel.PrinterName}, DriverName: {printerDataModel.DriverName}, PortName: {printerDataModel.PortName}")
+					$"Printer: {printerDataModel.PrinterName}")
 						.ToList();
 
 				foreach (string printerInfo in sharedPrinters)
@@ -126,12 +130,133 @@ namespace PrinterServerTool
 			return result;
 		}
 
-
-		private async void btnInstall_Click(object sender, EventArgs e)
+		private void btnInstallPrinter_Click(object sender, EventArgs e)
 		{
-			
+			try
+			{
+				if (lstOfPrinterName.SelectedItem != null)
+				{
+					string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+
+					if (selectedPrinterInfo != null)
+					{
+						// Extract the printer name from the selected information
+						string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
+
+						if (selectedPrinterName != null)
+						{
+							// Use PowerShell to install the selected printer
+							using (PowerShell PowerShellInstance = PowerShell.Create())
+							{
+								
+								//// PowerShell script to install the printer
+								//string installPrinterScript = $"Add-Printer -Name '{selectedPrinterName}'";
+
+								//// Add the script to PowerShell
+								//PowerShellInstance.AddScript(installPrinterScript);
+
+								//// Invoke execution on PowerShell
+								//Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
+
+								// Check for errors after PowerShell execution
+								if (PowerShellInstance.HadErrors)
+								{
+									// Handle errors
+									string errorMessage = string.Join("\n", PowerShellInstance.Streams.Error.Select(error => error.ToString()));
+									MessageBox.Show($"Error installing printer: {errorMessage}", "Error");
+								}
+								else
+								{
+									// Placeholder code to show a message box indicating successful installation
+									MessageBox.Show($"Printer '{selectedPrinterName}' installed successfully.", "Installation Result");
+								}
+							}
+						}
+						else
+						{
+							MessageBox.Show("Error: selectedPrinterName is null.", "Error");
+						}
+					}
+					else
+					{
+						MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
+					}
+				}
+				else
+				{
+					MessageBox.Show("Please select a printer to install.", "Error");
+				}
+
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
+			}
 		}
 
+		private void btnPrinterRemove_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (lstOfPrinterName.SelectedItem != null)
+				{
+					string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+
+					if (selectedPrinterInfo != null)
+					{
+						// Extract the printer name from the selected information
+						string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
+
+						if (selectedPrinterName != null)
+						{
+							// Use PowerShell to remove the selected printer
+							using (PowerShell PowerShellInstance = PowerShell.Create())
+							{
+								// PowerShell script to remove the printer
+								string removePrinterScript = $"Remove-Printer -Name '{selectedPrinterName}'";
+
+								// Add the script to PowerShell
+								PowerShellInstance.AddScript(removePrinterScript);
+
+								// Invoke execution on PowerShell
+								Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
+
+								// Check for errors after PowerShell execution
+								if (PowerShellInstance.HadErrors)
+								{
+									// Handle errors
+									string errorMessage = string.Join("\n", PowerShellInstance.Streams.Error.Select(error => error.ToString()));
+									MessageBox.Show($"Error removing printer: {errorMessage}", "Error");
+								}
+								else
+								{
+									// Placeholder code to show a message box indicating successful removal
+									MessageBox.Show($"Printer '{selectedPrinterName}' removed successfully.", "Removal Result");
+								}
+							}
+						}
+						else
+						{
+							MessageBox.Show("Error: selectedPrinterName is null.", "Error");
+						}
+					}
+					else
+					{
+						MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
+					}
+				}
+				else
+				{
+					MessageBox.Show("Please select a printer to remove.", "Error");
+				}
+
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred during removal: {ex.Message}", "Error");
+			}
+
+		}
 
 		//private bool ReadChoice() // its needed for indexing when install.
 		//{
