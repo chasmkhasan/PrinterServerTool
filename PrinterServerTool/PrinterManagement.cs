@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,26 +22,16 @@ namespace PrinterServerTool
 			choice = newChoice;
 		}
 
-		public async Task<List<PrinterDataModel>> GetSharedPrintersAsync()
+		public async Task<List<string>> GetSharedPrintersAsync(string selectedServer)
 		{
-			List<PrinterDataModel> sharedPrinters = new List<PrinterDataModel>();
+			List<string> sharedPrinters = new List<string>();
 
 			try
 			{
-				string script = @"Get-CimInstance -ClassName Win32_Printer |
-								Where-Object { $_.Shared -eq $true } |
-								Select-Object Name, ShareName, DriverName, PortName, Location";
+				string script = $"Invoke-Command -ComputerName {selectedServer} -Credential $YourCredentials -ScriptBlock {{Get-CimInstance -ClassName Win32_Printer | Where-Object {{ $_.Shared -eq $true }} | Select-Object -ExpandProperty Name}}";
 
-				sharedPrinters = ExecutePowerShellScript(script)
-					.Select(printerData => new PrinterDataModel
-					{
-						PrinterName = printerData["Name"] as string,
-						ShareName = printerData["ShareName"] as string,
-						DriverName = printerData["DriverName"] as string,
-						PortName = printerData["PortName"] as string,
-						Location = printerData["Location"] as string
-					})
-					.ToList();
+				// Execute the PowerShell script asynchronously
+				sharedPrinters = ExecutePowerShellScript(script);
 			}
 			catch (Exception ex)
 			{
@@ -50,32 +41,39 @@ namespace PrinterServerTool
 			return sharedPrinters;
 		}
 
-		private List<Dictionary<string, object>> ExecutePowerShellScript(string script)
+		private List<string> ExecutePowerShellScript(string script)
 		{
-			List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
+			List<string> results = new List<string>();
 
-			using (PowerShell PowerShellInstance = PowerShell.Create())
+			using (Runspace runspace = RunspaceFactory.CreateRunspace())
 			{
-				try
+				runspace.Open();
+
+				using (PowerShell PowerShellInstance = PowerShell.Create())
 				{
-					PowerShellInstance.AddScript(script);
-					Collection<PSObject> psDataCollection = PowerShellInstance.Invoke();
+					PowerShellInstance.Runspace = runspace;
 
-					foreach (PSObject outputItem in psDataCollection)
+					try
 					{
-						Dictionary<string, object> properties = outputItem.Properties
-							.ToDictionary(p => p.Name, p => p.Value);
+						PowerShellInstance.AddScript(script);
+						Collection<PSObject> psDataCollection = PowerShellInstance.Invoke();
 
-						results.Add(properties);
+						foreach (PSObject outputItem in psDataCollection)
+						{
+							results.Add(outputItem.ToString());
+						}
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show("PowerShell Error: " + ex.Message);
 					}
 				}
-				catch (Exception ex)
-				{
-					MessageBox.Show("PowerShell Error: " + ex.Message);
-				}
+
+				runspace.Close();
 			}
 
 			return results;
 		}
+
 	}
 }
