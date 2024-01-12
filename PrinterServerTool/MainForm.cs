@@ -1,3 +1,4 @@
+using Microsoft.Management.Infrastructure;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
@@ -11,7 +12,7 @@ namespace PrinterServerTool
 	public partial class MainForm : Form
 	{
 		PrinterManagement readPrinter = new PrinterManagement();
-		PrinterDataModel model = new PrinterDataModel();
+		//PrinterDataModel model = new PrinterDataModel();
 
 		public MainForm()
 		{
@@ -86,42 +87,70 @@ namespace PrinterServerTool
 
 			try
 			{
-				List<PrinterDataModel> sharedPrinterData = await readPrinter.GetSharedPrintersAsync();
+				string selectedServer = null;
 
-				PrinterDataModel printerDataModelInstance = new PrinterDataModel(); // Replace this with the actual instance
-
-				List<string> sharedPrinters = sharedPrinterData.Select(printerDataModel =>
-					//$"Server: {printerDataModel.ShareName}, Printer: {printerDataModel.PrinterName}, DriverName: {printerDataModel.DriverName}, PortName: {printerDataModel.PortName}, Location: {printerDataModel.Location}")
-					$"Printer: {printerDataModel.PrinterName}")
-						.ToList();
-
-				foreach (string printerInfo in sharedPrinters)
+				// Use Invoke to access the dropDownOptions control from the UI thread
+				if (dropDownOptions.InvokeRequired)
 				{
-					if (lstOfPrinterName.InvokeRequired)
+					dropDownOptions.Invoke(new Action(() =>
 					{
-						lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add(printerInfo)));
-					}
-					else
-					{
-						lstOfPrinterName.Items.Add(printerInfo);
-					}
-				}
-
-
-				if (gifBox.InvokeRequired)
-				{
-					gifBox.Invoke(new Action(() => gifBox.Visible = false));
+						selectedServer = dropDownOptions.SelectedItem?.ToString();
+					}));
 				}
 				else
 				{
-					gifBox.Visible = false;
+					selectedServer = dropDownOptions.SelectedItem?.ToString();
 				}
 
-				MessageBox.Show("Search Completed successfully.", "Search Result");
+				List<string> sharedPrinters = await readPrinter.GetSharedPrintersAsync(selectedServer);
 
-				result = true;
+
+				// Handle the results
+				if (sharedPrinters.Count > 0)
+				{
+					// Show the shared printers to the user
+					foreach (string printerName in sharedPrinters)
+					{
+						// Use Invoke to add items to the ListBox on the UI thread
+						if (lstOfPrinterName.InvokeRequired)
+						{
+							lstOfPrinterName.Invoke(new Action(() => lstOfPrinterName.Items.Add($"Printer: {printerName}")));
+						}
+						else
+						{
+							lstOfPrinterName.Items.Add($"Printer: {printerName}");
+						}
+					}
+
+					if (gifBox.InvokeRequired)
+					{
+						gifBox.Invoke(new Action(() => gifBox.Visible = false));
+					}
+					else
+					{
+						gifBox.Visible = false;
+					}
+
+					MessageBox.Show("Search Completed successfully.", "Search Result");
+
+					result = true;
+				}
+
+				else
+				{
+					if (gifBox.InvokeRequired)
+					{
+						gifBox.Invoke(new Action(() => gifBox.Visible = false));
+					}
+					else
+					{
+						gifBox.Visible = false;
+					}
+
+					MessageBox.Show("No Remote Shared Printer found.", "Search Result");
+
+				}
 			}
-
 			catch (Exception ex)
 			{
 				MessageBox.Show($"An error occurred: {ex.Message}", "Error");
@@ -129,6 +158,7 @@ namespace PrinterServerTool
 
 			return result;
 		}
+
 
 		private void btnInstallPrinter_Click(object sender, EventArgs e)
 		{
@@ -258,17 +288,6 @@ namespace PrinterServerTool
 
 		}
 
-		//private bool ReadChoice() // its needed for indexing when install.
-		//{
-		//	bool success = false;
-		//	int index = dropDownOptions.SelectedIndex;
-
-		//	if (index >= 0)
-		//	{
-		//		readPrinter.SetChoice(index);
-		//		success = true;
-		//	}
-		//	return success;
-		//}
+		
 	}
 }
