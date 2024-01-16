@@ -3,7 +3,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Reflection;
+using System.Security;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -14,12 +16,15 @@ namespace PrinterServerTool
 		PrinterManagement readPrinter = new PrinterManagement();
 		//PrinterDataModel model = new PrinterDataModel();
 
+		private UserInfo userInfoForm;
+
 		public MainForm()
 		{
 			InitializeComponent();
 
 			// Start the code.
 			InitializeGUI();
+			userInfoForm = new UserInfo();
 		}
 		private void InitializeGUI()
 		{
@@ -159,6 +164,7 @@ namespace PrinterServerTool
 			return result;
 		}
 
+		
 
 		private void btnInstallPrinter_Click(object sender, EventArgs e)
 		{
@@ -178,7 +184,7 @@ namespace PrinterServerTool
 							// Use PowerShell to install the selected printer
 							using (PowerShell PowerShellInstance = PowerShell.Create())
 							{
-								
+
 								//// PowerShell script to install the printer
 								//string installPrinterScript = $"Add-Printer -Name '{selectedPrinterName}'";
 
@@ -288,6 +294,6 @@ namespace PrinterServerTool
 
 		}
 
-		
+
 	}
 }
