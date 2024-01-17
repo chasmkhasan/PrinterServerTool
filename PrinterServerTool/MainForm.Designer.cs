@@ -110,6 +110,7 @@
 			lstOfPrinterName.Anchor = AnchorStyles.None;
 			lstOfPrinterName.Cursor = Cursors.Hand;
 			lstOfPrinterName.FormattingEnabled = true;
+			lstOfPrinterName.HorizontalScrollbar = true;
 			lstOfPrinterName.ItemHeight = 15;
 			lstOfPrinterName.Location = new Point(9, 72);
 			lstOfPrinterName.Name = "lstOfPrinterName";

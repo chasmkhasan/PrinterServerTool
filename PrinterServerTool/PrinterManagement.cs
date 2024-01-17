@@ -12,6 +12,13 @@ using System.Windows.Forms;
 using System.Management;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security;
+using Microsoft.Management.Infrastructure;
+using Microsoft.VisualBasic.Devices;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+using System.Net;
+using System.Xml.Linq;
+using Microsoft.VisualBasic.Logging;
+using System.Runtime.InteropServices;
 
 namespace PrinterServerTool
 {
@@ -34,39 +41,67 @@ namespace PrinterServerTool
 
 			try
 			{
-				// Prompt the user for credentials
 				PSCredential credential = GetCredentials(selectedServer);
 
-				// PowerShell script to get shared printers
-				string script = "Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name";
+				if (credential != null)
+				{
+					//string script = $@"Invoke-Command -ComputerName {selectedServer} -ScriptBlock {{
+					//                              Get-CimInstance -ClassName Win32_Printer |
+					//                              Where-Object {{ $_.Shared -eq $true }} |
+					//                              Select-Object -ExpandProperty Name
+					//                          }}";
 
-				// Execute the PowerShell script asynchronously
-				sharedPrinters = await ExecutePowerShellScriptAsync(script, selectedServer, credential);
+					string script = "Get-CimInstance -ClassName Win32_Printer | Where-Object { $_.Shared -eq $true } | Select-Object -ExpandProperty Name";
+
+					sharedPrinters = await ExecutePowerShellScriptAsync(selectedServer, credential, script);
+				}
+				else
+				{
+					// Handle the case where the user cancels credential input
+					// or improve the user experience based on your application logic
+					MessageBox.Show("Valid credentials are required to access shared printers. Please provide valid credentials and try again.", "Credentials Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+			}
+			catch (PipelineStoppedException ex)
+			{
+				// Handle specific exception if needed
+				LogException(ex);
+			}
+			catch (RuntimeException ex)
+			{
+				// Handle specific exception if needed
+				LogException(ex);
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error: " + ex.Message);
+				// Catch unexpected exceptions
+				LogException(ex);
 			}
 
 			return sharedPrinters;
 		}
 
-		private async Task<List<string>> ExecutePowerShellScriptAsync(string script, string computerName, PSCredential credential)
+		private void LogException(Exception ex)
+		{
+			EventLog.WriteEntry("YourApplication", $"An exception occurred: {ex.Message}", EventLogEntryType.Error);
+		}
+
+		//private async Task<List<string>> ExecutePowerShellScriptAsync(string script, string selectedServer, PSCredential credential)
+		private async Task<List<string>> ExecutePowerShellScriptAsync(string selectedServer, PSCredential credential, string script)
 		{
 			List<string> output = new List<string>();
 
 			await Task.Run(() =>
 			{
 				// Your existing synchronous PowerShell execution code
-				output = ExecutePowerShellScript(script, computerName, credential);
+				output = ExecutePowerShellScript(selectedServer, credential, script);
 			});
 
 			return output;
 		}
 
 
-		// Update ExecutePowerShellScript to handle errors
-		private List<string> ExecutePowerShellScript(string script, string computerName, PSCredential credential)
+		private List<string> ExecutePowerShellScript(string selectedServer, PSCredential credential, string script)
 		{
 			List<string> output = new List<string>();
 
@@ -74,8 +109,30 @@ namespace PrinterServerTool
 			{
 				using (PowerShell PowerShellInstance = PowerShell.Create())
 				{
-					// Set PowerShell credentials
-					PowerShellInstance.AddScript(script).AddParameter("ComputerName", computerName).AddParameter("Credential", credential);
+					////Set PowerShell credentials
+					//PowerShellInstance.AddScript(script).AddParameter("SelectedServer", selectedServer).AddParameter("Credential", credential);
+					////PowerShellInstance.AddParameter("SelectedServer", selectedServer)
+					////					.AddParameter("Credential", credential)
+					////					.AddScript(script);
+
+					////Alternatively, you can use the AddCommand method to set the script and parameters separately:
+					//PowerShellInstance.AddCommand("Invoke-Command")
+					//				.AddParameter("ComputerName", selectedServer)
+					//				.AddParameter("Credential", credential)
+					//				.AddScript(script);
+
+					// Combine the entire script into one string
+					//string fullScript = $@"Invoke-Command -ComputerName {selectedServer} -Credential {credential} -ScriptBlock {{{script}}}";
+
+					//string fullScript = $@"Invoke-Command -ComputerName {selectedServer} -Credential $credential -Authentication Default -ScriptBlock {{{script}}}";
+
+					string credentialString = $"\"{credential.UserName}\", (ConvertTo-SecureString \"{credential.Password}\" -AsPlainText -Force)";
+					string fullScript = $"Invoke-Command -ComputerName {selectedServer} -Credential (New-Object System.Management.Automation.PSCredential({credentialString})) -Authentication Default -ScriptBlock {{{script}}}";
+
+					PowerShellInstance.AddScript(fullScript);
+
+					// Add the credential as a variable
+					PowerShellInstance.AddParameter("credential", credential);
 
 					Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
 
@@ -119,12 +176,39 @@ namespace PrinterServerTool
 				SecureString password = userInfoForm.GetRemotePassword();
 
 				// Create a PSCredential object
-				PSCredential credential = new PSCredential(username, password);
+				PSCredential resultCredential = new PSCredential(username, password);
 
-				return credential;
+				return resultCredential;
 			}
 
 			return null; // Handle the case where the user cancels the input
 		}
+
+		//private string ConvertPSCredentialToString(PSCredential credential)
+		//{
+		//	// Extract username from PSCredential
+		//	string username = credential.UserName;
+
+		//	// Extract password from PSCredential
+		//	SecureString password = credential.Password;
+
+		//	// Convert the SecureString password to plain text
+		//	IntPtr passwordPtr = IntPtr.Zero;
+		//	try
+		//	{
+		//		passwordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
+		//		string plainTextPassword = Marshal.PtrToStringUni(passwordPtr);
+
+		//		// Construct the credential string
+		//		string credentialString = $"New-Object System.Management.Automation.PSCredential('{username}', (ConvertTo-SecureString '{plainTextPassword}' -AsPlainText -Force))";
+
+		//		return credentialString;
+		//	}
+		//	finally
+		//	{
+		//		// Make sure to free the allocated memory
+		//		Marshal.ZeroFreeGlobalAllocUnicode(passwordPtr);
+		//	}
+		//}
 	}
 }
