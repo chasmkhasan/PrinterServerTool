@@ -126,8 +126,32 @@ namespace PrinterServerTool
 
 					//string fullScript = $@"Invoke-Command -ComputerName {selectedServer} -Credential $credential -Authentication Default -ScriptBlock {{{script}}}";
 
-					string credentialString = $"\"{credential.UserName}\", (ConvertTo-SecureString \"{credential.Password}\" -AsPlainText -Force)";
-					string fullScript = $"Invoke-Command -ComputerName {selectedServer} -Credential (New-Object System.Management.Automation.PSCredential({credentialString})) -Authentication Default -ScriptBlock {{{script}}}";
+					//string credentialString = $"\"{credential.UserName}\", (ConvertTo-SecureString \"{credential.Password}\" -AsPlainText -Force)";
+					//string fullScript = $"Invoke-Command -ComputerName {selectedServer} -Credential (New-Object System.Management.Automation.PSCredential({credentialString})) -Authentication Default -ScriptBlock {{{script}}}";
+
+					// Extract username from PSCredential
+					string username = credential.UserName;
+
+					// Extract password from PSCredential
+					IntPtr passwordPtr = IntPtr.Zero;
+					string plainTextPassword = null;
+
+					try
+					{
+						passwordPtr = Marshal.SecureStringToGlobalAllocUnicode(credential.Password);
+						plainTextPassword = Marshal.PtrToStringUni(passwordPtr);
+					}
+					finally
+					{
+						Marshal.ZeroFreeGlobalAllocUnicode(passwordPtr);
+					}
+
+					// Construct the credential string
+					string credentialString = $"New-Object System.Management.Automation.PSCredential('{username}', (ConvertTo-SecureString '{plainTextPassword}' -AsPlainText -Force))";
+
+					// Construct the full Invoke-Command script
+					string fullScript = $"Invoke-Command -ComputerName {selectedServer} -Credential ({credentialString}) -Authentication Default -ScriptBlock {{{script}}}";
+
 
 					PowerShellInstance.AddScript(fullScript);
 
@@ -183,32 +207,5 @@ namespace PrinterServerTool
 
 			return null; // Handle the case where the user cancels the input
 		}
-
-		//private string ConvertPSCredentialToString(PSCredential credential)
-		//{
-		//	// Extract username from PSCredential
-		//	string username = credential.UserName;
-
-		//	// Extract password from PSCredential
-		//	SecureString password = credential.Password;
-
-		//	// Convert the SecureString password to plain text
-		//	IntPtr passwordPtr = IntPtr.Zero;
-		//	try
-		//	{
-		//		passwordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-		//		string plainTextPassword = Marshal.PtrToStringUni(passwordPtr);
-
-		//		// Construct the credential string
-		//		string credentialString = $"New-Object System.Management.Automation.PSCredential('{username}', (ConvertTo-SecureString '{plainTextPassword}' -AsPlainText -Force))";
-
-		//		return credentialString;
-		//	}
-		//	finally
-		//	{
-		//		// Make sure to free the allocated memory
-		//		Marshal.ZeroFreeGlobalAllocUnicode(passwordPtr);
-		//	}
-		//}
 	}
 }
