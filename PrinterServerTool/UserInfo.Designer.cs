@@ -62,7 +62,6 @@
 			txtRemoteUser.Name = "txtRemoteUser";
 			txtRemoteUser.Size = new Size(188, 23);
 			txtRemoteUser.TabIndex = 3;
-			txtRemoteUser.TextChanged += txtRemoteUser_TextChanged;
 			// 
 			// txtRemotePass
 			// 
@@ -71,7 +70,6 @@
 			txtRemotePass.Name = "txtRemotePass";
 			txtRemotePass.Size = new Size(188, 23);
 			txtRemotePass.TabIndex = 4;
-			txtRemotePass.TextChanged += txtRemotePass_TextChanged;
 			// 
 			// btnRemoteLogIn
 			// 
@@ -123,7 +121,6 @@
 
 		#endregion
 
-		private Label lblRemoteName;
 		private Label label1;
 		private Label label2;
 		private TextBox txtRemoteUser;

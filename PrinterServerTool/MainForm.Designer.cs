@@ -34,14 +34,14 @@
 			btnSearch = new Button();
 			lstOfPrinterName = new ListBox();
 			label1 = new Label();
-			gifBox = new PictureBox();
 			tableLayoutPanel3 = new TableLayoutPanel();
 			btnInstallPrinter = new Button();
 			btnPrinterRemove = new Button();
+			gifBox = new PictureBox();
 			tableLayoutPanel1.SuspendLayout();
 			tableLayoutPanel2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)gifBox).BeginInit();
 			tableLayoutPanel3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)gifBox).BeginInit();
 			SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -58,7 +58,7 @@
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5.214724F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 94.78528F));
 			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel1.Size = new Size(477, 354);
+			tableLayoutPanel1.Size = new Size(657, 354);
 			tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
@@ -71,16 +71,16 @@
 			tableLayoutPanel2.Controls.Add(btnSearch, 1, 1);
 			tableLayoutPanel2.Controls.Add(lstOfPrinterName, 0, 2);
 			tableLayoutPanel2.Controls.Add(label1, 0, 0);
-			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
 			tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 3);
-			tableLayoutPanel2.Location = new Point(22, 20);
+			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
+			tableLayoutPanel2.Location = new Point(30, 20);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
 			tableLayoutPanel2.RowCount = 4;
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 47.0588226F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 52.9411774F));
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 212F));
+			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 193F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
-			tableLayoutPanel2.Size = new Size(431, 310);
+			tableLayoutPanel2.Size = new Size(603, 310);
 			tableLayoutPanel2.TabIndex = 0;
 			// 
 			// dropDownOptions
@@ -88,18 +88,19 @@
 			dropDownOptions.Anchor = AnchorStyles.None;
 			dropDownOptions.Cursor = Cursors.Hand;
 			dropDownOptions.FormattingEnabled = true;
-			dropDownOptions.Location = new Point(69, 31);
+			dropDownOptions.Location = new Point(77, 45);
 			dropDownOptions.Name = "dropDownOptions";
-			dropDownOptions.Size = new Size(197, 23);
+			dropDownOptions.Size = new Size(315, 23);
 			dropDownOptions.TabIndex = 1;
 			// 
 			// btnSearch
 			// 
 			btnSearch.Anchor = AnchorStyles.None;
 			btnSearch.Cursor = Cursors.Hand;
-			btnSearch.Location = new Point(345, 32);
+			btnSearch.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnSearch.Location = new Point(489, 42);
 			btnSearch.Name = "btnSearch";
-			btnSearch.Size = new Size(75, 21);
+			btnSearch.Size = new Size(93, 29);
 			btnSearch.TabIndex = 2;
 			btnSearch.Text = "Search";
 			btnSearch.UseVisualStyleBackColor = true;
@@ -112,31 +113,21 @@
 			lstOfPrinterName.FormattingEnabled = true;
 			lstOfPrinterName.HorizontalScrollbar = true;
 			lstOfPrinterName.ItemHeight = 15;
-			lstOfPrinterName.Location = new Point(9, 72);
+			lstOfPrinterName.Location = new Point(5, 81);
 			lstOfPrinterName.Name = "lstOfPrinterName";
-			lstOfPrinterName.Size = new Size(317, 184);
+			lstOfPrinterName.Size = new Size(458, 184);
 			lstOfPrinterName.TabIndex = 4;
 			// 
 			// label1
 			// 
 			label1.Anchor = AnchorStyles.None;
 			label1.AutoSize = true;
-			label1.Location = new Point(93, 6);
+			label1.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			label1.Location = new Point(146, 8);
 			label1.Name = "label1";
-			label1.Size = new Size(149, 15);
+			label1.Size = new Size(177, 19);
 			label1.TabIndex = 0;
 			label1.Text = "Welcome To Shared Printer";
-			// 
-			// gifBox
-			// 
-			gifBox.Anchor = AnchorStyles.None;
-			gifBox.Image = Properties.Resources.Spinning_fangs;
-			gifBox.Location = new Point(350, 131);
-			gifBox.Name = "gifBox";
-			gifBox.Size = new Size(66, 66);
-			gifBox.TabIndex = 5;
-			gifBox.TabStop = false;
-			gifBox.Visible = false;
 			// 
 			// tableLayoutPanel3
 			// 
@@ -150,13 +141,13 @@
 			tableLayoutPanel3.Name = "tableLayoutPanel3";
 			tableLayoutPanel3.RowCount = 1;
 			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-			tableLayoutPanel3.Size = new Size(329, 34);
+			tableLayoutPanel3.Size = new Size(463, 34);
 			tableLayoutPanel3.TabIndex = 6;
 			// 
 			// btnInstallPrinter
 			// 
 			btnInstallPrinter.Anchor = AnchorStyles.None;
-			btnInstallPrinter.Location = new Point(29, 3);
+			btnInstallPrinter.Location = new Point(63, 3);
 			btnInstallPrinter.Name = "btnInstallPrinter";
 			btnInstallPrinter.Size = new Size(105, 28);
 			btnInstallPrinter.TabIndex = 0;
@@ -167,7 +158,7 @@
 			// btnPrinterRemove
 			// 
 			btnPrinterRemove.Anchor = AnchorStyles.None;
-			btnPrinterRemove.Location = new Point(186, 3);
+			btnPrinterRemove.Location = new Point(286, 3);
 			btnPrinterRemove.Name = "btnPrinterRemove";
 			btnPrinterRemove.Size = new Size(121, 28);
 			btnPrinterRemove.TabIndex = 1;
@@ -175,20 +166,31 @@
 			btnPrinterRemove.UseVisualStyleBackColor = true;
 			btnPrinterRemove.Click += btnPrinterRemove_Click;
 			// 
+			// gifBox
+			// 
+			gifBox.Anchor = AnchorStyles.None;
+			gifBox.Image = Properties.Resources.Spinning_fangs;
+			gifBox.Location = new Point(503, 140);
+			gifBox.Name = "gifBox";
+			gifBox.Size = new Size(66, 66);
+			gifBox.TabIndex = 5;
+			gifBox.TabStop = false;
+			gifBox.Visible = false;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = SystemColors.ControlLightLight;
-			ClientSize = new Size(477, 354);
+			ClientSize = new Size(657, 354);
 			Controls.Add(tableLayoutPanel1);
 			Name = "MainForm";
 			Text = "Printer's Tool";
 			tableLayoutPanel1.ResumeLayout(false);
 			tableLayoutPanel2.ResumeLayout(false);
 			tableLayoutPanel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)gifBox).EndInit();
 			tableLayoutPanel3.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)gifBox).EndInit();
 			ResumeLayout(false);
 		}
 
@@ -200,7 +202,6 @@
 		private ComboBox dropDownOptions;
 		private Button btnSearch;
 		private ListBox lstOfPrinterName;
-		private ProgressBar prgBar;
 		private PictureBox gifBox;
 		private TableLayoutPanel tableLayoutPanel3;
 		private Button btnInstallPrinter;

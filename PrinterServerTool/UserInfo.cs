@@ -71,17 +71,5 @@ namespace PrinterServerTool
 			// Close the form
 			Close();
 		}
-
-		private void txtRemoteUser_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void txtRemotePass_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		
 	}
 }
