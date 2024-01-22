@@ -10,9 +10,9 @@ namespace PrinterServerTool
 {
 	internal class PowerShellManagement
 	{
-		public async Task<List<PrinterDataModel>> ExecutePowerShellScriptAsync(string selectedServer, PSCredential credential, string fullScript)
+		public async Task<List<DataModel>> ExecutePowerShellScriptAsync(string selectedServer, PSCredential credential, string fullScript)
 		{
-			List<PrinterDataModel> output = new List<PrinterDataModel>();
+			List<DataModel> output = new List<DataModel>();
 
 			await Task.Run(() =>
 			{
@@ -22,9 +22,9 @@ namespace PrinterServerTool
 			return output;
 		}
 
-		private List<PrinterDataModel> ExecutePowerShellScript(string selectedServer, PSCredential credential, string fullScript)
+		private List<DataModel> ExecutePowerShellScript(string selectedServer, PSCredential credential, string fullScript)
 		{
-			List<PrinterDataModel> output = new List<PrinterDataModel>();
+			List<DataModel> output = new List<DataModel>();
 
 			try
 			{
@@ -57,13 +57,13 @@ namespace PrinterServerTool
 			return output;
 		}
 
-		private List<PrinterDataModel> ProcessPSOutput(Collection<PSObject> psOutput)
+		private List<DataModel> ProcessPSOutput(Collection<PSObject> psOutput)
 		{
-			List<PrinterDataModel> output = new List<PrinterDataModel>();
+			List<DataModel> output = new List<DataModel>();
 
 			foreach (PSObject obj in psOutput)
 			{
-				PrinterDataModel printerData = new PrinterDataModel
+				DataModel printerData = new DataModel
 				{
 					PrinterName = obj.Properties["Name"]?.Value?.ToString(),
 					ShareName = obj.Properties["ShareName"]?.Value?.ToString(),

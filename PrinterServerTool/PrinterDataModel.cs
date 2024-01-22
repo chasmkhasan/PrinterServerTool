@@ -18,8 +18,7 @@ namespace PrinterServerTool
 		public string DriverVersion { get; set; }
 		public string PrinterModel { get; set; }
 		public string PrinterStatus { get; set; }
+		
 	}
-
-
 
 }

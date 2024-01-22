@@ -10,9 +10,9 @@ namespace PrinterServerTool
 		PowerShellManagement powerShellManagement = new PowerShellManagement();
 		LoginManagement loginManagement = new LoginManagement();
 
-		public async Task<List<PrinterDataModel>> GetPrintersAsync(string selectedServer)
+		public async Task<List<DataModel>> GetPrintersAsync(string selectedServer)
 		{
-			List<PrinterDataModel> sharedPrinters = new List<PrinterDataModel>();
+			List<DataModel> sharedPrinters = new List<DataModel>();
 
 			try
 			{

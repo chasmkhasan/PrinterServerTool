@@ -1,11 +1,17 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
+using System.Net;
 
 namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
 		PrinterManagement readPrinter = new PrinterManagement();
+		PowerShellManagement powerShellManagement = new PowerShellManagement();
+		LoginManagement loginManagement = new LoginManagement();
+		InstallManagement installManagement = new InstallManagement();
+		RemoveManagement removeManagement = new RemoveManagement();
+		DataModel dataModel = new DataModel();
 
 		private UserInfo userInfoForm;
 
@@ -74,13 +80,13 @@ namespace PrinterServerTool
 			{
 				string selectedServer = GetSelectedServer();
 
-				List<PrinterDataModel> sharedPrinters = await readPrinter.GetPrintersAsync(selectedServer);
+				List<DataModel> sharedPrinters = await readPrinter.GetPrintersAsync(selectedServer);
 
 				if (sharedPrinters.Count > 0)
 				{
 					UpdateUIWithPrintersInfo(sharedPrinters);
 
-					HideGifBox();
+					SpiningBar();
 
 					MessageBox.Show("Search Completed successfully.", "Search Result");
 
@@ -88,7 +94,7 @@ namespace PrinterServerTool
 				}
 				else
 				{
-					HideGifBox();
+					SpiningBar();
 
 					MessageBox.Show("No Remote Shared Printer found.", "Search Result");
 				}
@@ -120,9 +126,9 @@ namespace PrinterServerTool
 			return selectedServer;
 		}
 
-		private void UpdateUIWithPrintersInfo(List<PrinterDataModel> printers)
+		private void UpdateUIWithPrintersInfo(List<DataModel> printers)
 		{
-			foreach (PrinterDataModel printer in printers)
+			foreach (DataModel printer in printers)
 			{
 				if (lstOfPrinterName.InvokeRequired)
 				{
@@ -154,7 +160,7 @@ namespace PrinterServerTool
 			}
 		}
 
-		private void HideGifBox()
+		private void SpiningBar()
 		{
 			if (gifBox.InvokeRequired)
 			{
@@ -177,50 +183,35 @@ namespace PrinterServerTool
 		{
 			try
 			{
-				if (lstOfPrinterName.SelectedItem != null)
-				{
-					string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
-
-					if (selectedPrinterInfo != null)
-					{
-
-						string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
-
-						if (selectedPrinterName != null)
-						{
-
-							using (PowerShell PowerShellInstance = PowerShell.Create())
-							{
-
-
-								if (PowerShellInstance.HadErrors)
-								{
-
-									string errorMessage = string.Join("\n", PowerShellInstance.Streams.Error.Select(error => error.ToString()));
-									MessageBox.Show($"Error installing printer: {errorMessage}", "Error");
-								}
-								else
-								{
-
-									MessageBox.Show($"Printer '{selectedPrinterName}' installed successfully.", "Installation Result");
-								}
-							}
-						}
-						else
-						{
-							MessageBox.Show("Error: selectedPrinterName is null.", "Error");
-						}
-					}
-					else
-					{
-						MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
-					}
-				}
-				else
+				if (lstOfPrinterName.SelectedItem == null)
 				{
 					MessageBox.Show("Please select a printer to install.", "Error");
+					return;
 				}
 
+				string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+				if (selectedPrinterInfo == null)
+				{
+					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
+					return;
+				}
+
+				string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
+				if (selectedPrinterName == null)
+				{
+					MessageBox.Show("Error: selectedPrinterName is null.", "Error");
+					return;
+				}
+
+				// Get credentials from the user
+				PSCredential credential = loginManagement.GetCredentials(selectedPrinterName);
+				if (credential == null)
+				{
+					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+					return;
+				}
+
+				installManagement.InstallPrinter(selectedPrinterName, credential);
 			}
 			catch (Exception ex)
 			{
@@ -232,65 +223,41 @@ namespace PrinterServerTool
 		{
 			try
 			{
-				if (lstOfPrinterName.SelectedItem != null)
+				if (lstOfPrinterName.SelectedItem == null)
 				{
-					string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
-
-					if (selectedPrinterInfo != null)
-					{
-						// Extract the printer name from the selected information
-						string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
-
-						if (selectedPrinterName != null)
-						{
-							// Use PowerShell to remove the selected printer
-							using (PowerShell PowerShellInstance = PowerShell.Create())
-							{
-								// PowerShell script to remove the printer
-								string removePrinterScript = $"Remove-Printer -Name '{selectedPrinterName}'";
-
-								// Add the script to PowerShell
-								PowerShellInstance.AddScript(removePrinterScript);
-
-								// Invoke execution on PowerShell
-								Collection<PSObject> PSOutput = PowerShellInstance.Invoke();
-
-								// Check for errors after PowerShell execution
-								if (PowerShellInstance.HadErrors)
-								{
-									// Handle errors
-									string errorMessage = string.Join("\n", PowerShellInstance.Streams.Error.Select(error => error.ToString()));
-									MessageBox.Show($"Error removing printer: {errorMessage}", "Error");
-								}
-								else
-								{
-									// Placeholder code to show a message box indicating successful removal
-									MessageBox.Show($"Printer '{selectedPrinterName}' removed successfully.", "Removal Result");
-								}
-							}
-						}
-						else
-						{
-							MessageBox.Show("Error: selectedPrinterName is null.", "Error");
-						}
-					}
-					else
-					{
-						MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
-					}
-				}
-				else
-				{
-					MessageBox.Show("Please select a printer to remove.", "Error");
+					MessageBox.Show("Please select a printer to install.", "Error");
+					return;
 				}
 
+				string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+				if (selectedPrinterInfo == null)
+				{
+					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
+					return;
+				}
+
+				string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
+				if (selectedPrinterName == null)
+				{
+					MessageBox.Show("Error: selectedPrinterName is null.", "Error");
+					return;
+				}
+
+				// Get credentials from the user
+				PSCredential credential = loginManagement.GetCredentials(selectedPrinterName);
+				if (credential == null)
+				{
+					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+					return;
+				}
+
+				removeManagement.RemovePrinter(selectedPrinterName, credential);
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"An error occurred during removal: {ex.Message}", "Error");
+				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
 
 		}
-
 	}
 }
