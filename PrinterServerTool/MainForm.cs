@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Net;
+using System.Windows.Forms;
 
 namespace PrinterServerTool
 {
@@ -59,7 +60,7 @@ namespace PrinterServerTool
 		private void btnSearch_Click(object sender, EventArgs e)
 		{
 
-			lstOfPrinterName.Items.Clear();
+			dataGridPrinter.Rows.Clear();
 
 			gifBox.Image = Properties.Resources.Spinning_fangs;
 			gifBox.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -88,7 +89,7 @@ namespace PrinterServerTool
 
 					SpiningBar();
 
-					MessageBox.Show("Search Completed successfully.", "Search Result");
+					MessageBox.Show($"{selectedServer} has {sharedPrinters.Count} number of shared printer.", "Search Result");
 
 					result = true;
 				}
@@ -126,36 +127,80 @@ namespace PrinterServerTool
 			return selectedServer;
 		}
 
+		//private void UpdateUIWithPrintersInfo(List<DataModel> printers)
+		//{
+		//	foreach (DataModel printer in printers)
+		//	{
+		//		string displayString = $"Printer: {printer.PrinterName}, " +
+		//							   $"Share: {printer.ShareName}, " +
+		//							   $"Driver: {printer.DriverName}, " +
+		//							   $"Port: {printer.PortName}, " +
+		//							   $"Location: {printer.Location}, " +
+		//							   $"SystemName: {printer.SystemName}, " +
+		//							   $"DriverVersion: {printer.DriverVersion}, " +
+		//							   $"PrinterModel: {printer.PrinterModel},  " +
+		//							   $"PrinterStatus: {printer.PrinterStatus}";
+
+		//		if (lstOfPrinterName.InvokeRequired)
+		//		{
+		//			lstOfPrinterName.Invoke(new Action(() =>
+		//			{
+		//				lstOfPrinterName.Items.Add(displayString);
+		//			}));
+		//		}
+		//		else
+		//		{
+		//			lstOfPrinterName.Items.Add(displayString);
+		//		}
+		//	}
+		//}
+
 		private void UpdateUIWithPrintersInfo(List<DataModel> printers)
 		{
+			if (dataGridPrinter.InvokeRequired)
+			{
+				dataGridPrinter.Invoke(new Action(() =>
+				{
+					dataGridPrinter.Rows.Clear();
+					dataGridPrinter.Columns.Clear();
+
+					// Add columns
+					dataGridPrinter.Columns.Add("PrinterName", "Printer Name");
+					dataGridPrinter.Columns.Add("ShareName", "Share Name");
+					dataGridPrinter.Columns.Add("DriverName", "Driver Name");
+					dataGridPrinter.Columns.Add("PortName", "Port Name");
+					dataGridPrinter.Columns.Add("Location", "Location");
+					dataGridPrinter.Columns.Add("SystemName", "System Name");
+					dataGridPrinter.Columns.Add("DriverVersion", "Driver Version");
+					dataGridPrinter.Columns.Add("PrinterModel", "Printer Model");
+					dataGridPrinter.Columns.Add("PrinterStatus", "Printer Status");
+				}));
+			}
+
 			foreach (DataModel printer in printers)
 			{
-				if (lstOfPrinterName.InvokeRequired)
+				object[] row = {
+								printer.PrinterName,
+								printer.ShareName,
+								printer.DriverName,
+								printer.PortName,
+								printer.Location,
+								printer.SystemName,
+								printer.DriverVersion,
+								printer.PrinterModel,
+								printer.PrinterStatus
+								};
+
+				if (dataGridPrinter.InvokeRequired)
 				{
-					lstOfPrinterName.Invoke(new Action(() =>
+					dataGridPrinter.Invoke(new Action(() =>
 					{
-						lstOfPrinterName.Items.Add($"Printer: {printer.PrinterName}, " +
-												   $"Share: {printer.ShareName}, " +
-												   $"Driver: {printer.DriverName}, " +
-												   $"Port: {printer.PortName}, " +
-												   $"Location: {printer.Location}, " +
-												   $"SystemName: {printer.SystemName}, " +
-												   $"DriverVersion: {printer.DriverVersion}, " +
-												   $"PrinterModel: {printer.PrinterModel},  " +
-												   $"PrinterStatus: {printer.PrinterStatus}");
+						dataGridPrinter.Rows.Add(row);
 					}));
 				}
 				else
 				{
-					lstOfPrinterName.Items.Add($"Printer: {printer.PrinterName}, " +
-											   $"Share: {printer.ShareName}, " +
-											   $"Driver: {printer.DriverName}, " +
-											   $"Port: {printer.PortName}, " +
-											   $"Location: {printer.Location}, " +
-											   $"PrinterStatus: {printer.PrinterStatus}, " +
-											   $"SystemName: {printer.SystemName}, " +
-											   $"DriverVersion: {printer.DriverVersion}, " +
-											   $"PrinterModel: {printer.PrinterModel}");
+					dataGridPrinter.Rows.Add(row);
 				}
 			}
 		}
@@ -177,19 +222,17 @@ namespace PrinterServerTool
 			MessageBox.Show($"An error occurred: {errorMessage}", "Error");
 		}
 
-
-
 		private void btnInstallPrinter_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				if (lstOfPrinterName.SelectedItem == null)
+				if (dataGridPrinter.SelectedRows == null)
 				{
 					MessageBox.Show("Please select a printer to install.", "Error");
 					return;
 				}
 
-				string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+				string selectedPrinterInfo = dataGridPrinter.SelectedRows.ToString();
 				if (selectedPrinterInfo == null)
 				{
 					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
@@ -223,13 +266,13 @@ namespace PrinterServerTool
 		{
 			try
 			{
-				if (lstOfPrinterName.SelectedItem == null)
+				if (dataGridPrinter.SelectedRows == null)
 				{
 					MessageBox.Show("Please select a printer to install.", "Error");
 					return;
 				}
 
-				string selectedPrinterInfo = lstOfPrinterName.SelectedItem.ToString();
+				string selectedPrinterInfo = dataGridPrinter.SelectedRows.ToString();
 				if (selectedPrinterInfo == null)
 				{
 					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");

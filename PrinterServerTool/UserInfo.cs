@@ -68,8 +68,14 @@ namespace PrinterServerTool
 			// Set the DialogResult to Cancel to indicate user cancellation
 			DialogResult = DialogResult.Cancel;
 
-			// Close the form
-			Close();
+			//// Close the form
+			//Close();
+
+			//// Hide the form instead of closing it
+			//this.Hide();
+
+			// Close the form and exit the application
+			Application.Exit();
 		}
 	}
 }

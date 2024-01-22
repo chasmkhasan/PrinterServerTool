@@ -68,6 +68,7 @@
 			txtRemotePass.Cursor = Cursors.IBeam;
 			txtRemotePass.Location = new Point(155, 85);
 			txtRemotePass.Name = "txtRemotePass";
+			txtRemotePass.PasswordChar = '*';
 			txtRemotePass.Size = new Size(188, 23);
 			txtRemotePass.TabIndex = 4;
 			// 
@@ -95,9 +96,9 @@
 			// lblRemoteInformation
 			// 
 			lblRemoteInformation.BorderStyle = BorderStyle.Fixed3D;
-			lblRemoteInformation.Location = new Point(51, 19);
+			lblRemoteInformation.Location = new Point(29, 19);
 			lblRemoteInformation.Name = "lblRemoteInformation";
-			lblRemoteInformation.Size = new Size(277, 23);
+			lblRemoteInformation.Size = new Size(314, 23);
 			lblRemoteInformation.TabIndex = 7;
 			lblRemoteInformation.TextAlign = ContentAlignment.MiddleCenter;
 			// 
@@ -114,6 +115,7 @@
 			Controls.Add(label2);
 			Controls.Add(label1);
 			Name = "UserInfo";
+			StartPosition = FormStartPosition.CenterScreen;
 			Text = "Remote LoginForm";
 			ResumeLayout(false);
 			PerformLayout();
