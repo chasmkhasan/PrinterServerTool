@@ -38,6 +38,7 @@
 			btnPrinterRemove = new Button();
 			gifBox = new PictureBox();
 			dataGridPrinter = new DataGridView();
+			BtnExit = new Button();
 			tableLayoutPanel1.SuspendLayout();
 			tableLayoutPanel2.SuspendLayout();
 			tableLayoutPanel3.SuspendLayout();
@@ -73,13 +74,14 @@
 			tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 3);
 			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
 			tableLayoutPanel2.Controls.Add(dataGridPrinter, 0, 2);
+			tableLayoutPanel2.Controls.Add(BtnExit, 1, 3);
 			tableLayoutPanel2.Dock = DockStyle.Fill;
 			tableLayoutPanel2.Location = new Point(17, 20);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
 			tableLayoutPanel2.RowCount = 4;
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 43.636364F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 56.363636F));
-			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 205F));
+			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 198F));
 			tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
 			tableLayoutPanel2.Size = new Size(701, 310);
 			tableLayoutPanel2.TabIndex = 0;
@@ -88,10 +90,11 @@
 			// 
 			dropDownOptions.Anchor = AnchorStyles.None;
 			dropDownOptions.Cursor = Cursors.Hand;
+			dropDownOptions.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			dropDownOptions.FormattingEnabled = true;
-			dropDownOptions.Location = new Point(141, 35);
+			dropDownOptions.Location = new Point(141, 38);
 			dropDownOptions.Name = "dropDownOptions";
-			dropDownOptions.Size = new Size(315, 23);
+			dropDownOptions.Size = new Size(315, 27);
 			dropDownOptions.TabIndex = 1;
 			// 
 			// btnSearch
@@ -99,7 +102,7 @@
 			btnSearch.Anchor = AnchorStyles.None;
 			btnSearch.Cursor = Cursors.Hand;
 			btnSearch.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			btnSearch.Location = new Point(603, 32);
+			btnSearch.Location = new Point(603, 37);
 			btnSearch.Name = "btnSearch";
 			btnSearch.Size = new Size(93, 29);
 			btnSearch.TabIndex = 2;
@@ -112,7 +115,7 @@
 			label1.Anchor = AnchorStyles.None;
 			label1.AutoSize = true;
 			label1.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			label1.Location = new Point(210, 4);
+			label1.Location = new Point(210, 6);
 			label1.Name = "label1";
 			label1.Size = new Size(177, 19);
 			label1.TabIndex = 0;
@@ -136,6 +139,7 @@
 			// btnInstallPrinter
 			// 
 			btnInstallPrinter.Anchor = AnchorStyles.None;
+			btnInstallPrinter.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnInstallPrinter.Location = new Point(95, 3);
 			btnInstallPrinter.Name = "btnInstallPrinter";
 			btnInstallPrinter.Size = new Size(105, 28);
@@ -147,6 +151,7 @@
 			// btnPrinterRemove
 			// 
 			btnPrinterRemove.Anchor = AnchorStyles.None;
+			btnPrinterRemove.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnPrinterRemove.Location = new Point(383, 3);
 			btnPrinterRemove.Name = "btnPrinterRemove";
 			btnPrinterRemove.Size = new Size(121, 28);
@@ -159,7 +164,7 @@
 			// 
 			gifBox.Anchor = AnchorStyles.None;
 			gifBox.Image = Properties.Resources.Spinning_fangs;
-			gifBox.Location = new Point(616, 134);
+			gifBox.Location = new Point(616, 138);
 			gifBox.Name = "gifBox";
 			gifBox.Size = new Size(66, 66);
 			gifBox.TabIndex = 5;
@@ -170,10 +175,22 @@
 			// 
 			dataGridPrinter.BackgroundColor = SystemColors.ControlLightLight;
 			dataGridPrinter.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			dataGridPrinter.Location = new Point(3, 68);
+			dataGridPrinter.Location = new Point(3, 75);
 			dataGridPrinter.Name = "dataGridPrinter";
-			dataGridPrinter.Size = new Size(592, 199);
+			dataGridPrinter.Size = new Size(592, 192);
 			dataGridPrinter.TabIndex = 7;
+			// 
+			// BtnExit
+			// 
+			BtnExit.Dock = DockStyle.Fill;
+			BtnExit.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			BtnExit.Location = new Point(601, 273);
+			BtnExit.Name = "BtnExit";
+			BtnExit.Size = new Size(97, 34);
+			BtnExit.TabIndex = 8;
+			BtnExit.Text = "Exit";
+			BtnExit.UseVisualStyleBackColor = true;
+			BtnExit.Click += BtnExit_Click;
 			// 
 			// MainForm
 			// 
@@ -183,7 +200,6 @@
 			ClientSize = new Size(742, 354);
 			Controls.Add(tableLayoutPanel1);
 			Name = "MainForm";
-			StartPosition = FormStartPosition.CenterScreen;
 			Text = "Printer's Tool";
 			tableLayoutPanel1.ResumeLayout(false);
 			tableLayoutPanel2.ResumeLayout(false);
@@ -206,5 +222,6 @@
 		private Button btnInstallPrinter;
 		private Button btnPrinterRemove;
 		private DataGridView dataGridPrinter;
+		private Button BtnExit;
 	}
 }

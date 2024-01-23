@@ -127,34 +127,6 @@ namespace PrinterServerTool
 			return selectedServer;
 		}
 
-		//private void UpdateUIWithPrintersInfo(List<DataModel> printers)
-		//{
-		//	foreach (DataModel printer in printers)
-		//	{
-		//		string displayString = $"Printer: {printer.PrinterName}, " +
-		//							   $"Share: {printer.ShareName}, " +
-		//							   $"Driver: {printer.DriverName}, " +
-		//							   $"Port: {printer.PortName}, " +
-		//							   $"Location: {printer.Location}, " +
-		//							   $"SystemName: {printer.SystemName}, " +
-		//							   $"DriverVersion: {printer.DriverVersion}, " +
-		//							   $"PrinterModel: {printer.PrinterModel},  " +
-		//							   $"PrinterStatus: {printer.PrinterStatus}";
-
-		//		if (lstOfPrinterName.InvokeRequired)
-		//		{
-		//			lstOfPrinterName.Invoke(new Action(() =>
-		//			{
-		//				lstOfPrinterName.Items.Add(displayString);
-		//			}));
-		//		}
-		//		else
-		//		{
-		//			lstOfPrinterName.Items.Add(displayString);
-		//		}
-		//	}
-		//}
-
 		private void UpdateUIWithPrintersInfo(List<DataModel> printers)
 		{
 			if (dataGridPrinter.InvokeRequired)
@@ -301,6 +273,11 @@ namespace PrinterServerTool
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
 
+		}
+
+		private void BtnExit_Click(object sender, EventArgs e)
+		{
+			Application.Exit();
 		}
 	}
 }

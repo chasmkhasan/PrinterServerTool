@@ -16,18 +16,15 @@ namespace PrinterServerTool
 			{
 				PowerShellInstance.AddScript("Import-Module PrintManagement");
 
-				DataModel printerData = new DataModel
+				DataModel printerData = new DataModel();
+
+				foreach (var property in typeof(DataModel).GetProperties())
 				{
-					PrinterName = selectedPrinterName,
-					ShareName = selectedPrinterName,
-					PortName = selectedPrinterName,
-					DriverName = selectedPrinterName,
-					Location = selectedPrinterName,
-					SystemName = selectedPrinterName,
-					DriverVersion = selectedPrinterName,
-					PrinterModel = selectedPrinterName,
-					PrinterStatus = selectedPrinterName
-				};
+					if (property.CanWrite)
+					{
+						property.SetValue(printerData, selectedPrinterName);
+					}
+				}
 
 				string addPrinterCommand = $"Add-Printer " +
 						   $"-Name '{printerData.PrinterName}' " +
@@ -57,7 +54,5 @@ namespace PrinterServerTool
 				}
 			}
 		}
-
-
 	}
 }
