@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Net;
+using System.Security;
 using System.Windows.Forms;
 
 namespace PrinterServerTool
@@ -108,7 +109,7 @@ namespace PrinterServerTool
 			return result;
 		}
 
-		private string GetSelectedServer()
+		public string GetSelectedServer()
 		{
 			string selectedServer = null;
 

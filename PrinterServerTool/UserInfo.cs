@@ -14,20 +14,17 @@ namespace PrinterServerTool
 {
 	public partial class UserInfo : Form
 	{
+		//private Dictionary<string, Tuple<string, SecureString>> savedCredentials = new Dictionary<string, Tuple<string, SecureString>>();
+		//private bool rememberGlobally = false;
 
 		private string enteredUsername;
 		private SecureString enteredPassword;
-
+		private string selectedServer;
+		private MainForm mainForm;
+		
 		public UserInfo()
 		{
 			InitializeComponent();
-
-			if (Properties.Settings.Default.Username != string.Empty)
-			{
-				txtRemoteUser.Text = Properties.Settings.Default.Username;
-				txtRemotePass.Text = Properties.Settings.Default.Password;
-				ChkRemember.Checked = true;
-			}
 		}
 
 		public string GetRemoteUsername()
@@ -47,6 +44,21 @@ namespace PrinterServerTool
 			lblRemoteInformation.Text = text;
 		}
 
+		private void ChkRemember_CheckedChanged(object sender, EventArgs e)
+		{
+			
+		}
+
+		private void BtnRemoteLogIn_Click(object sender, EventArgs e)
+		{
+			enteredUsername = txtRemoteUser.Text;
+			enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
+
+			DialogResult = DialogResult.OK;
+
+			Close();
+		}
+
 		private SecureString GetSecurePasswordFromUser(string password)
 		{
 			SecureString securePassword = new SecureString();
@@ -57,6 +69,8 @@ namespace PrinterServerTool
 			securePassword.MakeReadOnly();
 			return securePassword;
 		}
+
+		
 
 		private void ShowPassWord_CheckedChanged(object sender, EventArgs e)
 		{
@@ -70,61 +84,62 @@ namespace PrinterServerTool
 			}
 		}
 
-		private void ChkRemember_CheckedChanged(object sender, EventArgs e)
-		{
-			if (ChkRemember.Checked)
-			{
-				enteredUsername = txtRemoteUser.Text;
-				enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
-			}
-			else
-			{
-				enteredUsername = string.Empty;
-				enteredPassword = null; // Clear the SecureString
-			}
-
-			Properties.Settings.Default.Username = enteredUsername;
-			Properties.Settings.Default.Password = ConvertSecureStringToString(enteredPassword);
-
-			Properties.Settings.Default.Save();
-		}
-
 		private void BtnCancle_Click(object sender, EventArgs e)
 		{
-			// Set the DialogResult to Cancel to indicate user cancellation
 			DialogResult = DialogResult.Cancel;
 
-			//// Close the form
-			//Close();
-
-			//// Hide the form instead of closing it
-			//this.Hide();
-
-			// Close the form and exit the application
 			Application.Exit();
 		}
 
-		private void BtnRemoteLogIn_Click(object sender, EventArgs e)
-		{
-			enteredUsername = txtRemoteUser.Text;
-			enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
+		//public UserInfo()
+		//{
+		//	InitializeComponent();
 
-			DialogResult = DialogResult.OK;
+		//	//if (Properties.Settings.Default.Username != string.Empty)
+		//	//{
+		//	//	txtRemoteUser.Text = Properties.Settings.Default.Username;
+		//	//	txtRemotePass.Text = Properties.Settings.Default.Password;
+		//	//	ChkRemember.Checked = true;
+		//	//}
+		//}
 
-			Close();
-		}
+		
 
-		private string ConvertSecureStringToString(SecureString secureString)
-		{
-			IntPtr ptr = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(secureString);
-			try
-			{
-				return System.Runtime.InteropServices.Marshal.PtrToStringBSTR(ptr);
-			}
-			finally
-			{
-				System.Runtime.InteropServices.Marshal.ZeroFreeBSTR(ptr);
-			}
-		}
+		//private void ChkRemember_CheckedChanged(object sender, EventArgs e)
+		//{
+		//	if (ChkRemember.Checked)
+		//	{
+		//		enteredUsername = txtRemoteUser.Text;
+		//		enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
+		//	}
+		//	else
+		//	{
+		//		enteredUsername = string.Empty;
+		//		enteredPassword = null; // Clear the SecureString
+		//	}
+
+		//	Properties.Settings.Default.Username = enteredUsername;
+		//	Properties.Settings.Default.Password = ConvertSecureStringToString(enteredPassword);
+
+		//	Properties.Settings.Default.Save();
+		//}
+
+		//private string ConvertSecureStringToString(SecureString secureString)
+		//{
+		//	if(secureString != null)
+		//	{
+		//		IntPtr ptr = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(secureString);
+		//		try
+		//		{
+		//			return System.Runtime.InteropServices.Marshal.PtrToStringBSTR(ptr);
+		//		}
+		//		finally
+		//		{
+		//			System.Runtime.InteropServices.Marshal.ZeroFreeBSTR(ptr);
+		//		}
+		//	}
+
+		//	return null;
+		//}
 	}
 }
