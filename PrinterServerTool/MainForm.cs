@@ -8,22 +8,23 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-		PrinterManagement readPrinter = new PrinterManagement();
-		PowerShellManagement powerShellManagement = new PowerShellManagement();
-		LoginManagement loginManagement = new LoginManagement();
-		InstallManagement installManagement = new InstallManagement();
-		RemoveManagement removeManagement = new RemoveManagement();
-		DataModel dataModel = new DataModel();
-
-		private UserInfo userInfoForm;
+        private PrinterManagement _readPrinter;
+        private LoginManagement _loginManagement;
+        private InstallManagement _installManagement;
+        private RemoveManagement _removeManagement;
+		private List<DataModel> _sharedPrinters;
 
 		public MainForm()
 		{
+            _readPrinter = new PrinterManagement();
+			_loginManagement = new LoginManagement();
+			_installManagement = new InstallManagement();
+			_removeManagement = new RemoveManagement();
+
 			InitializeComponent();
 
 			// Start the code.
 			InitializeGUI();
-			userInfoForm = new UserInfo();
 		}
 		private void InitializeGUI()
 		{
@@ -82,15 +83,15 @@ namespace PrinterServerTool
 			{
 				string selectedServer = GetSelectedServer();
 
-				List<DataModel> sharedPrinters = await readPrinter.GetPrintersAsync(selectedServer);
+                _sharedPrinters = await _readPrinter.GetPrintersAsync(selectedServer);
 
-				if (sharedPrinters.Count > 0)
+				if (_sharedPrinters.Count > 0)
 				{
-					UpdateUIWithPrintersInfo(sharedPrinters);
+					UpdateUIWithPrintersInfo();
 
 					SpiningBar();
 
-					MessageBox.Show($"{selectedServer} has {sharedPrinters.Count} number of shared printer.", "Search Result");
+					MessageBox.Show($"{selectedServer} has {_sharedPrinters.Count} number of shared printer.", "Search Result");
 
 					result = true;
 				}
@@ -128,7 +129,7 @@ namespace PrinterServerTool
 			return selectedServer;
 		}
 
-		private void UpdateUIWithPrintersInfo(List<DataModel> printers)
+		private void UpdateUIWithPrintersInfo()
 		{
 			if (dataGridPrinter.InvokeRequired)
 			{
@@ -150,19 +151,19 @@ namespace PrinterServerTool
 				}));
 			}
 
-			foreach (DataModel printer in printers)
+			foreach (DataModel printer in _sharedPrinters)
 			{
 				object[] row = {
-								printer.PrinterName,
-								printer.ShareName,
-								printer.DriverName,
-								printer.PortName,
-								printer.Location,
-								printer.SystemName,
-								printer.DriverVersion,
-								printer.PrinterModel,
-								printer.PrinterStatus
-								};
+					printer.PrinterName,
+					printer.ShareName,
+					printer.DriverName,
+					printer.PortName,
+					printer.Location,
+					printer.SystemName,
+					printer.DriverVersion,
+					printer.PrinterModel,
+					printer.PrinterStatus
+				};
 
 				if (dataGridPrinter.InvokeRequired)
 				{
@@ -205,29 +206,24 @@ namespace PrinterServerTool
 					return;
 				}
 
-				string selectedPrinterInfo = dataGridPrinter.SelectedRows.ToString();
-				if (selectedPrinterInfo == null)
+				if (dataGridPrinter.SelectedRows.Count > 0)
 				{
-					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
-					return;
-				}
+                    DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
+					DataModel dataModel = _sharedPrinters[selectedRow.Index];
 
-				string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
-				if (selectedPrinterName == null)
-				{
-					MessageBox.Show("Error: selectedPrinterName is null.", "Error");
-					return;
-				}
+					string selectedPrinterName = dataModel.PrinterName;
 
-				// Get credentials from the user
-				PSCredential credential = loginManagement.GetCredentials(selectedPrinterName);
-				if (credential == null)
-				{
-					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
-					return;
-				}
+                    // Get credentials from the user
+                    PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
 
-				installManagement.InstallPrinter(selectedPrinterName, credential);
+                    if (credential == null)
+                    {
+                        MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+                        return;
+                    }
+
+                    _installManagement.InstallPrinter(selectedPrinterName, credential, dataModel);
+                }
 			}
 			catch (Exception ex)
 			{
@@ -260,14 +256,14 @@ namespace PrinterServerTool
 				}
 
 				// Get credentials from the user
-				PSCredential credential = loginManagement.GetCredentials(selectedPrinterName);
+				PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
 				if (credential == null)
 				{
 					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
 					return;
 				}
 
-				removeManagement.RemovePrinter(selectedPrinterName, credential);
+				_removeManagement.RemovePrinter(selectedPrinterName, credential);
 			}
 			catch (Exception ex)
 			{
