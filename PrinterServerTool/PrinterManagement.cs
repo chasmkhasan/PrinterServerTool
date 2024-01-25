@@ -7,26 +7,41 @@ namespace PrinterServerTool
 {
 	internal class PrinterManagement
 	{
-		PowerShellManagement powerShellManagement = new PowerShellManagement();
-		LoginManagement loginManagement = new LoginManagement();
+		private PowerShellManagement _powerShellManagement;
+        private LoginManagement _loginManagement;
+		private PSCredential _psCredential;
 
-		public async Task<List<DataModel>> GetPrintersAsync(string selectedServer)
+        public PrinterManagement()
+		{
+            _powerShellManagement = new PowerShellManagement();
+            _loginManagement = new LoginManagement();
+        }
+
+		public PSCredential Credentials
+		{
+			get
+			{
+                return _psCredential;
+            }
+		}
+
+        public async Task<List<DataModel>> GetPrintersAsync(string selectedServer)
 		{
 			List<DataModel> sharedPrinters = new List<DataModel>();
 
 			try
 			{
-				PSCredential credential = loginManagement.GetCredentials(selectedServer);
+                _psCredential = _loginManagement.GetCredentials(selectedServer);
 
-				string credentialString = loginManagement.GetCredentialString(credential);
+				string credentialString = _loginManagement.GetCredentialString(_psCredential);
 
-				if (credential != null)
+				if (_psCredential != null)
 				{
 					string script = SystemQuery();
 
 					string fullScript = $"Invoke-Command -ComputerName {selectedServer} -Credential ({credentialString}) -Authentication Default -ScriptBlock {{{script}}}";
 
-					sharedPrinters = await powerShellManagement.ExecutePowerShellScriptAsync(selectedServer, credential, fullScript);
+					sharedPrinters = await _powerShellManagement.ExecutePowerShellScriptAsync(selectedServer, _psCredential, fullScript);
 				}
 				else
 				{
