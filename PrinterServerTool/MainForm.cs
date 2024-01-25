@@ -30,7 +30,7 @@ namespace PrinterServerTool
 		}
 		private void InitializeGUI()
 		{
-			this.Text += " Owned by Caironite";
+			this.Text += " Queue installer";
 			ReadServerList();
 		}
 
@@ -92,8 +92,6 @@ namespace PrinterServerTool
 					UpdateUIWithPrintersInfo();
 
 					SpiningBar();
-
-					MessageBox.Show($"{selectedServer} has {_sharedPrinters.Count} number of shared printer.", "Search Result");
 
 					result = true;
 				}
@@ -274,11 +272,6 @@ namespace PrinterServerTool
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
 
-		}
-
-		private void BtnExit_Click(object sender, EventArgs e)
-		{
-			Application.Exit();
 		}
 	}
 }

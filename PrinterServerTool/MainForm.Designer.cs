@@ -38,7 +38,6 @@
 			btnPrinterRemove = new Button();
 			gifBox = new PictureBox();
 			dataGridPrinter = new DataGridView();
-			BtnExit = new Button();
 			tableLayoutPanel1.SuspendLayout();
 			tableLayoutPanel2.SuspendLayout();
 			tableLayoutPanel3.SuspendLayout();
@@ -74,7 +73,6 @@
 			tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 3);
 			tableLayoutPanel2.Controls.Add(gifBox, 1, 2);
 			tableLayoutPanel2.Controls.Add(dataGridPrinter, 0, 2);
-			tableLayoutPanel2.Controls.Add(BtnExit, 1, 3);
 			tableLayoutPanel2.Dock = DockStyle.Fill;
 			tableLayoutPanel2.Location = new Point(13, 19);
 			tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -146,6 +144,7 @@
 			btnInstallPrinter.TabIndex = 0;
 			btnInstallPrinter.Text = "Install";
 			btnInstallPrinter.UseVisualStyleBackColor = true;
+			btnInstallPrinter.Visible = false;
 			btnInstallPrinter.Click += btnInstallPrinter_Click;
 			// 
 			// btnPrinterRemove
@@ -158,6 +157,7 @@
 			btnPrinterRemove.TabIndex = 1;
 			btnPrinterRemove.Text = "Remove";
 			btnPrinterRemove.UseVisualStyleBackColor = true;
+			btnPrinterRemove.Visible = false;
 			btnPrinterRemove.Click += btnPrinterRemove_Click;
 			// 
 			// gifBox
@@ -181,18 +181,6 @@
 			dataGridPrinter.Name = "dataGridPrinter";
 			dataGridPrinter.Size = new Size(443, 192);
 			dataGridPrinter.TabIndex = 7;
-			// 
-			// BtnExit
-			// 
-			BtnExit.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			BtnExit.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			BtnExit.Location = new Point(452, 262);
-			BtnExit.Name = "BtnExit";
-			BtnExit.Size = new Size(71, 34);
-			BtnExit.TabIndex = 8;
-			BtnExit.Text = "Exit";
-			BtnExit.UseVisualStyleBackColor = true;
-			BtnExit.Click += BtnExit_Click;
 			// 
 			// MainForm
 			// 
@@ -224,6 +212,5 @@
 		private Button btnInstallPrinter;
 		private Button btnPrinterRemove;
 		private DataGridView dataGridPrinter;
-		private Button BtnExit;
 	}
 }
