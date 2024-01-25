@@ -8,16 +8,17 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-        private PrinterManagement _readPrinter;
+        private PrinterManagement _printerManagement;
         private LoginManagement _loginManagement;
         private InstallManagement _installManagement;
         private RemoveManagement _removeManagement;
 		private List<DataModel> _sharedPrinters;
 		private UserInfo _userInfo;
+		private PSCredential _credentials;
 
 		public MainForm()
 		{
-            _readPrinter = new PrinterManagement();
+            _printerManagement = new PrinterManagement();
 			_loginManagement = new LoginManagement();
 			_installManagement = new InstallManagement();
 			_removeManagement = new RemoveManagement();
@@ -85,7 +86,8 @@ namespace PrinterServerTool
 			{
 				string selectedServer = GetSelectedServer();
 
-                _sharedPrinters = await _readPrinter.GetPrintersAsync(selectedServer);
+                _sharedPrinters = await _printerManagement.GetPrintersAsync(selectedServer);
+				_credentials = _printerManagement.Credentials;
 
 				if (_sharedPrinters.Count > 0)
 				{
@@ -215,18 +217,13 @@ namespace PrinterServerTool
 
 					string selectedPrinterName = dataModel.PrinterName;
 
-					// Get credentials from the user
-					//PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
-					//PSCredential credential = _loginManagement.GetCredentialsByServer(selectedPrinterName);
-					PSCredential credential = _userInfo.GetAutoLoginCredential(selectedPrinterName);
-
-					if (credential == null)
+					if (_credentials == null)
 					{
 						MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
 						return;
 					}
 
-					_installManagement.InstallPrinter(selectedPrinterName, credential, dataModel);
+					_installManagement.InstallPrinter(selectedPrinterName, _credentials, dataModel);
 				}
 			}
 			catch (Exception ex)
@@ -259,15 +256,13 @@ namespace PrinterServerTool
 					return;
 				}
 
-				// Get credentials from the user
-				PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
-				if (credential == null)
+				if (_credentials == null)
 				{
 					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
 					return;
 				}
 
-				_removeManagement.RemovePrinter(selectedPrinterName, credential);
+				_removeManagement.RemovePrinter(selectedPrinterName, _credentials);
 			}
 			catch (Exception ex)
 			{
