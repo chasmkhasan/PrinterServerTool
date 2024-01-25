@@ -229,7 +229,7 @@ namespace PrinterServerTool
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
 		}
-
+		
 		private void btnPrinterRemove_Click(object sender, EventArgs e)
 		{
 			try

@@ -87,37 +87,6 @@ namespace PrinterServerTool
 			}
 		}
 
-		private LoginStore loginStore = new LoginStore();
-
-		private bool TryAutoLogin()
-		{
-			
-			List<LoginStore.CredentialsEntry> storedCredentials = loginStore.GetStoredCredentials();
-
-			
-			string enteredPasswordString = ConvertSecureStringToString(enteredPassword);
-
-			
-			var matchingCredentials = storedCredentials.FirstOrDefault(c =>
-				c.Username == enteredUsername && c.Password == enteredPasswordString && c.Server == selectedServer);
-
-			
-			if (matchingCredentials != null)
-			{
-				
-				autoLoginCredential = new PSCredential(matchingCredentials.Username, enteredPassword);
-
-				return true; // Successfully logged in
-			}
-
-			return false; // Could not log in automatically
-		}
-
-		public PSCredential GetAutoLoginCredential(string selectedServer)
-		{
-			return autoLoginCredential;
-		}
-
 		public SecureString GetSecurePasswordFromUser(string password)
 		{
 			SecureString securePassword = new SecureString();
@@ -147,78 +116,5 @@ namespace PrinterServerTool
 
 			Application.Exit();
 		}
-
-
-
-		//public UserInfo()
-		//{
-		//	InitializeComponent();
-
-		//	//if (Properties.Settings.Default.Username != string.Empty)
-		//	//{
-		//	//	txtRemoteUser.Text = Properties.Settings.Default.Username;
-		//	//	txtRemotePass.Text = Properties.Settings.Default.Password;
-		//	//	ChkRemember.Checked = true;
-		//	//}
-		//}
-
-
-		//private void BtnRemoteLogIn_Click(object sender, EventArgs e)
-		//{
-		//	LoginStore loginStore = new LoginStore();
-
-		//	enteredUsername = txtRemoteUser.Text;
-		//	enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
-
-		//	// Store the entered credentials in the list
-		//	loginStore.AddCredentials(new LoginStore.CredentialsEntry
-		//	{
-		//		Username = enteredUsername,
-		//		Password = txtRemotePass.Text, // Store the password as plain text for simplicity
-		//		Server = selectedServer
-		//	});
-
-		//	DialogResult = DialogResult.OK;
-
-		//	Close();
-		//}
-
-
-		//private void ChkRemember_CheckedChanged(object sender, EventArgs e)
-		//{
-		//	if (ChkRemember.Checked)
-		//	{
-		//		enteredUsername = txtRemoteUser.Text;
-		//		enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
-		//	}
-		//	else
-		//	{
-		//		enteredUsername = string.Empty;
-		//		enteredPassword = null; // Clear the SecureString
-		//	}
-
-		//	Properties.Settings.Default.Username = enteredUsername;
-		//	Properties.Settings.Default.Password = ConvertSecureStringToString(enteredPassword);
-
-		//	Properties.Settings.Default.Save();
-		//}
-
-		//private string ConvertSecureStringToString(SecureString secureString)
-		//{
-		//	if(secureString != null)
-		//	{
-		//		IntPtr ptr = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(secureString);
-		//		try
-		//		{
-		//			return System.Runtime.InteropServices.Marshal.PtrToStringBSTR(ptr);
-		//		}
-		//		finally
-		//		{
-		//			System.Runtime.InteropServices.Marshal.ZeroFreeBSTR(ptr);
-		//		}
-		//	}
-
-		//	return null;
-		//}
 	}
 }
