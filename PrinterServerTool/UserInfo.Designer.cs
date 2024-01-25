@@ -136,7 +136,7 @@
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(414, 231);
+			ClientSize = new Size(416, 234);
 			Controls.Add(ChkRemember);
 			Controls.Add(ShowPassWord);
 			Controls.Add(lblRemoteInformation);

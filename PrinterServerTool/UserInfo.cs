@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Management.Automation;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +16,15 @@ namespace PrinterServerTool
 {
 	public partial class UserInfo : Form
 	{
-		//private Dictionary<string, Tuple<string, SecureString>> savedCredentials = new Dictionary<string, Tuple<string, SecureString>>();
-		//private bool rememberGlobally = false;
-
 		private string enteredUsername;
 		private SecureString enteredPassword;
 		private string selectedServer;
+		private bool rememberCredentials;
 		private MainForm mainForm;
-		
+		private PSCredential autoLoginCredential;
+
+		private List<LoginStore.CredentialsEntry> storedCredentials = new List<LoginStore.CredentialsEntry>();
+
 		public UserInfo()
 		{
 			InitializeComponent();
@@ -42,24 +45,80 @@ namespace PrinterServerTool
 		public void SetRemoteInformation(string text)
 		{
 			lblRemoteInformation.Text = text;
+			selectedServer = text;
 		}
 
 		private void ChkRemember_CheckedChanged(object sender, EventArgs e)
 		{
-			
+			rememberCredentials = ChkRemember.Checked;
 		}
 
 		private void BtnRemoteLogIn_Click(object sender, EventArgs e)
 		{
+			LoginStore loginStore = new LoginStore();
+
 			enteredUsername = txtRemoteUser.Text;
 			enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
+
+			// Store the entered credentials in the list
+			loginStore.AddCredentials(new LoginStore.CredentialsEntry
+			{
+				Username = enteredUsername,
+				Password = ConvertSecureStringToString(enteredPassword),
+				Server = selectedServer
+			});
 
 			DialogResult = DialogResult.OK;
 
 			Close();
+
 		}
 
-		private SecureString GetSecurePasswordFromUser(string password)
+		private string ConvertSecureStringToString(SecureString secureString)
+		{
+			IntPtr ptr = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(secureString);
+			try
+			{
+				return System.Runtime.InteropServices.Marshal.PtrToStringBSTR(ptr);
+			}
+			finally
+			{
+				System.Runtime.InteropServices.Marshal.ZeroFreeBSTR(ptr);
+			}
+		}
+
+		private LoginStore loginStore = new LoginStore();
+
+		private bool TryAutoLogin()
+		{
+			
+			List<LoginStore.CredentialsEntry> storedCredentials = loginStore.GetStoredCredentials();
+
+			
+			string enteredPasswordString = ConvertSecureStringToString(enteredPassword);
+
+			
+			var matchingCredentials = storedCredentials.FirstOrDefault(c =>
+				c.Username == enteredUsername && c.Password == enteredPasswordString && c.Server == selectedServer);
+
+			
+			if (matchingCredentials != null)
+			{
+				
+				autoLoginCredential = new PSCredential(matchingCredentials.Username, enteredPassword);
+
+				return true; // Successfully logged in
+			}
+
+			return false; // Could not log in automatically
+		}
+
+		public PSCredential GetAutoLoginCredential(string selectedServer)
+		{
+			return autoLoginCredential;
+		}
+
+		public SecureString GetSecurePasswordFromUser(string password)
 		{
 			SecureString securePassword = new SecureString();
 			foreach (char c in password)
@@ -69,8 +128,6 @@ namespace PrinterServerTool
 			securePassword.MakeReadOnly();
 			return securePassword;
 		}
-
-		
 
 		private void ShowPassWord_CheckedChanged(object sender, EventArgs e)
 		{
@@ -91,6 +148,8 @@ namespace PrinterServerTool
 			Application.Exit();
 		}
 
+
+
 		//public UserInfo()
 		//{
 		//	InitializeComponent();
@@ -103,7 +162,27 @@ namespace PrinterServerTool
 		//	//}
 		//}
 
-		
+
+		//private void BtnRemoteLogIn_Click(object sender, EventArgs e)
+		//{
+		//	LoginStore loginStore = new LoginStore();
+
+		//	enteredUsername = txtRemoteUser.Text;
+		//	enteredPassword = GetSecurePasswordFromUser(txtRemotePass.Text);
+
+		//	// Store the entered credentials in the list
+		//	loginStore.AddCredentials(new LoginStore.CredentialsEntry
+		//	{
+		//		Username = enteredUsername,
+		//		Password = txtRemotePass.Text, // Store the password as plain text for simplicity
+		//		Server = selectedServer
+		//	});
+
+		//	DialogResult = DialogResult.OK;
+
+		//	Close();
+		//}
+
 
 		//private void ChkRemember_CheckedChanged(object sender, EventArgs e)
 		//{

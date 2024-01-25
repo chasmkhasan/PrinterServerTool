@@ -10,6 +10,7 @@ namespace PrinterServerTool
 {
 	internal class InstallManagement
 	{
+
 		public void InstallPrinter(string selectedPrinterName, PSCredential credential, DataModel dataModel)
 		{
 			using (PowerShell PowerShellInstance = PowerShell.Create())

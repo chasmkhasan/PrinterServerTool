@@ -50,12 +50,23 @@ namespace PrinterServerTool.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SelectedServer {
+        public string Server {
             get {
-                return ((string)(this["SelectedServer"]));
+                return ((string)(this["Server"]));
             }
             set {
-                this["SelectedServer"] = value;
+                this["Server"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection CredentialsList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["CredentialsList"]));
+            }
+            set {
+                this["CredentialsList"] = value;
             }
         }
     }

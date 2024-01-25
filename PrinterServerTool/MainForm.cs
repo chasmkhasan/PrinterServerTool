@@ -13,6 +13,7 @@ namespace PrinterServerTool
         private InstallManagement _installManagement;
         private RemoveManagement _removeManagement;
 		private List<DataModel> _sharedPrinters;
+		private UserInfo _userInfo;
 
 		public MainForm()
 		{
@@ -20,6 +21,7 @@ namespace PrinterServerTool
 			_loginManagement = new LoginManagement();
 			_installManagement = new InstallManagement();
 			_removeManagement = new RemoveManagement();
+			_userInfo = new UserInfo();
 
 			InitializeComponent();
 
@@ -208,22 +210,24 @@ namespace PrinterServerTool
 
 				if (dataGridPrinter.SelectedRows.Count > 0)
 				{
-                    DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
+					DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
 					DataModel dataModel = _sharedPrinters[selectedRow.Index];
 
 					string selectedPrinterName = dataModel.PrinterName;
 
-                    // Get credentials from the user
-                    PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
+					// Get credentials from the user
+					//PSCredential credential = _loginManagement.GetCredentials(selectedPrinterName);
+					//PSCredential credential = _loginManagement.GetCredentialsByServer(selectedPrinterName);
+					PSCredential credential = _userInfo.GetAutoLoginCredential(selectedPrinterName);
 
-                    if (credential == null)
-                    {
-                        MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
-                        return;
-                    }
+					if (credential == null)
+					{
+						MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+						return;
+					}
 
-                    _installManagement.InstallPrinter(selectedPrinterName, credential, dataModel);
-                }
+					_installManagement.InstallPrinter(selectedPrinterName, credential, dataModel);
+				}
 			}
 			catch (Exception ex)
 			{
