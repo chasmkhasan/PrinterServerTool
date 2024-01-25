@@ -13,3 +13,11 @@ How to activated Remote Desktop: Setting > System > scroll down left will see Re
 # How to save credential in your project:
 Right button of project > properties > setting > General > click on link > Name : Username, Type string, Scope: User.
 
+# If installation does not work in your system:
+Details information is here:
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
+
+For activated Executive policy: before running this app you need run below code in powershell. Powershell will be run as an administrator. Caution: its only for production purpose.
+PowerShell: 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser'
+
+
