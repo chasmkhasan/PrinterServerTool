@@ -34,7 +34,6 @@
 			label1 = new Label();
 			dataGridPrinter = new DataGridView();
 			tableLayoutPanel5 = new TableLayoutPanel();
-			btnPrinterRemove = new Button();
 			btnInstallPrinter = new Button();
 			spiningBarBox = new PictureBox();
 			tableLayoutPanel6 = new TableLayoutPanel();
@@ -126,7 +125,6 @@
 			// 
 			tableLayoutPanel5.ColumnCount = 1;
 			tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-			tableLayoutPanel5.Controls.Add(btnPrinterRemove, 0, 1);
 			tableLayoutPanel5.Controls.Add(btnInstallPrinter, 0, 0);
 			tableLayoutPanel5.Controls.Add(spiningBarBox, 0, 4);
 			tableLayoutPanel5.Location = new Point(869, 81);
@@ -139,19 +137,6 @@
 			tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 115F));
 			tableLayoutPanel5.Size = new Size(142, 251);
 			tableLayoutPanel5.TabIndex = 8;
-			// 
-			// btnPrinterRemove
-			// 
-			btnPrinterRemove.Dock = DockStyle.Fill;
-			btnPrinterRemove.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			btnPrinterRemove.Location = new Point(3, 41);
-			btnPrinterRemove.Name = "btnPrinterRemove";
-			btnPrinterRemove.Size = new Size(136, 33);
-			btnPrinterRemove.TabIndex = 1;
-			btnPrinterRemove.Text = "Remove";
-			btnPrinterRemove.UseVisualStyleBackColor = true;
-			btnPrinterRemove.Visible = false;
-			btnPrinterRemove.Click += btnPrinterRemove_Click;
 			// 
 			// btnInstallPrinter
 			// 
@@ -268,7 +253,6 @@
 		private Button button1;
 		private Button button2;
 		private TableLayoutPanel tableLayoutPanel5;
-		private Button btnPrinterRemove;
 		private Button btnInstallPrinter;
 		private PictureBox spiningBarBox;
 		private TableLayoutPanel tableLayoutPanel6;

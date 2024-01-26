@@ -11,7 +11,6 @@ namespace PrinterServerTool
 		private PrinterManagement _printerManagement;
 		private LoginManagement _loginManagement;
 		private InstallManagement _installManagement;
-		private RemoveManagement _removeManagement;
 		private List<DataModel> _sharedPrinters;
 		private UserInfo _userInfo;
 		private PSCredential _credentials;
@@ -21,7 +20,6 @@ namespace PrinterServerTool
 			_printerManagement = new PrinterManagement();
 			_loginManagement = new LoginManagement();
 			_installManagement = new InstallManagement();
-			_removeManagement = new RemoveManagement();
 			_userInfo = new UserInfo();
 
 			InitializeComponent();
@@ -99,7 +97,6 @@ namespace PrinterServerTool
 					this.Invoke((MethodInvoker)delegate
 					{
 						btnInstallPrinter.Visible = true;
-						btnPrinterRemove.Visible = true;
 					});
 				}
 				else
@@ -233,45 +230,6 @@ namespace PrinterServerTool
 			{
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
-		}
-
-		private void btnPrinterRemove_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				if (dataGridPrinter.SelectedRows == null)
-				{
-					MessageBox.Show("Please select a printer to install.", "Error");
-					return;
-				}
-
-				string selectedPrinterInfo = dataGridPrinter.SelectedRows.ToString();
-				if (selectedPrinterInfo == null)
-				{
-					MessageBox.Show("Error: selectedPrinterInfo is null.", "Error");
-					return;
-				}
-
-				string selectedPrinterName = selectedPrinterInfo.Replace("Printer: ", "");
-				if (selectedPrinterName == null)
-				{
-					MessageBox.Show("Error: selectedPrinterName is null.", "Error");
-					return;
-				}
-
-				if (_credentials == null)
-				{
-					MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
-					return;
-				}
-
-				_removeManagement.RemovePrinter(selectedPrinterName, _credentials);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
-			}
-
 		}
 	}
 }

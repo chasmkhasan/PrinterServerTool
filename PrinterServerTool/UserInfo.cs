@@ -19,7 +19,6 @@ namespace PrinterServerTool
 		private string enteredUsername;
 		private SecureString enteredPassword;
 		private string selectedServer;
-		private PSCredential autoLoginCredential;
 
 		private List<LoginStore.CredentialsEntry> storedCredentials = new List<LoginStore.CredentialsEntry>();
 
