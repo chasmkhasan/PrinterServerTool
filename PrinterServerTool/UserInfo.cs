@@ -19,8 +19,6 @@ namespace PrinterServerTool
 		private string enteredUsername;
 		private SecureString enteredPassword;
 		private string selectedServer;
-		private bool rememberCredentials;
-		private MainForm mainForm;
 		private PSCredential autoLoginCredential;
 
 		private List<LoginStore.CredentialsEntry> storedCredentials = new List<LoginStore.CredentialsEntry>();
@@ -46,11 +44,6 @@ namespace PrinterServerTool
 		{
 			lblRemoteInformation.Text = text;
 			selectedServer = text;
-		}
-
-		private void ChkRemember_CheckedChanged(object sender, EventArgs e)
-		{
-			rememberCredentials = ChkRemember.Checked;
 		}
 
 		private void BtnRemoteLogIn_Click(object sender, EventArgs e)

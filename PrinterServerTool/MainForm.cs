@@ -8,17 +8,17 @@ namespace PrinterServerTool
 {
 	public partial class MainForm : Form
 	{
-        private PrinterManagement _printerManagement;
-        private LoginManagement _loginManagement;
-        private InstallManagement _installManagement;
-        private RemoveManagement _removeManagement;
+		private PrinterManagement _printerManagement;
+		private LoginManagement _loginManagement;
+		private InstallManagement _installManagement;
+		private RemoveManagement _removeManagement;
 		private List<DataModel> _sharedPrinters;
 		private UserInfo _userInfo;
 		private PSCredential _credentials;
 
 		public MainForm()
 		{
-            _printerManagement = new PrinterManagement();
+			_printerManagement = new PrinterManagement();
 			_loginManagement = new LoginManagement();
 			_installManagement = new InstallManagement();
 			_removeManagement = new RemoveManagement();
@@ -67,15 +67,14 @@ namespace PrinterServerTool
 
 			dataGridPrinter.Rows.Clear();
 
-			gifBox.Image = Properties.Resources.Spinning_fangs;
-			gifBox.SizeMode = PictureBoxSizeMode.CenterImage;
-			gifBox.Visible = true;
+			spiningBarBox.Image = Properties.Resources.Spinning_fangs;
+			spiningBarBox.SizeMode = PictureBoxSizeMode.CenterImage;
+			spiningBarBox.Visible = true;
 
 			_ = Task.Run(async () =>
 			{
 				await ReadPrintersAsync();
 			});
-
 		}
 
 		private async Task<bool> ReadPrintersAsync()
@@ -86,7 +85,7 @@ namespace PrinterServerTool
 			{
 				string selectedServer = GetSelectedServer();
 
-                _sharedPrinters = await _printerManagement.GetPrintersAsync(selectedServer);
+				_sharedPrinters = await _printerManagement.GetPrintersAsync(selectedServer);
 				_credentials = _printerManagement.Credentials;
 
 				if (_sharedPrinters.Count > 0)
@@ -96,6 +95,12 @@ namespace PrinterServerTool
 					SpiningBar();
 
 					result = true;
+
+					this.Invoke((MethodInvoker)delegate
+					{
+						btnInstallPrinter.Visible = true;
+						btnPrinterRemove.Visible = true;
+					});
 				}
 				else
 				{
@@ -183,13 +188,13 @@ namespace PrinterServerTool
 
 		private void SpiningBar()
 		{
-			if (gifBox.InvokeRequired)
+			if (spiningBarBox.InvokeRequired)
 			{
-				gifBox.Invoke(new Action(() => gifBox.Visible = false));
+				spiningBarBox.Invoke(new Action(() => spiningBarBox.Visible = false));
 			}
 			else
 			{
-				gifBox.Visible = false;
+				spiningBarBox.Visible = false;
 			}
 		}
 
@@ -229,7 +234,7 @@ namespace PrinterServerTool
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
 			}
 		}
-		
+
 		private void btnPrinterRemove_Click(object sender, EventArgs e)
 		{
 			try

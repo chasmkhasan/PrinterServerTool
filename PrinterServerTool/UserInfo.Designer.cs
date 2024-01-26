@@ -36,7 +36,6 @@
 			BtnCancle = new Button();
 			lblRemoteInformation = new Label();
 			ShowPassWord = new CheckBox();
-			ChkRemember = new CheckBox();
 			SuspendLayout();
 			// 
 			// label1
@@ -45,9 +44,9 @@
 			label1.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			label1.Location = new Point(29, 57);
 			label1.Name = "label1";
-			label1.Size = new Size(130, 19);
+			label1.Size = new Size(121, 19);
 			label1.TabIndex = 1;
-			label1.Text = "Remote User Name";
+			label1.Text = "Remote Username";
 			// 
 			// label2
 			// 
@@ -55,9 +54,9 @@
 			label2.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			label2.Location = new Point(29, 95);
 			label2.Name = "label2";
-			label2.Size = new Size(123, 19);
+			label2.Size = new Size(120, 19);
 			label2.TabIndex = 2;
-			label2.Text = "Remote PassWord";
+			label2.Text = "Remote Password";
 			// 
 			// txtRemoteUser
 			// 
@@ -80,7 +79,7 @@
 			// 
 			BtnRemoteLogIn.Cursor = Cursors.Hand;
 			BtnRemoteLogIn.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			BtnRemoteLogIn.Location = new Point(100, 184);
+			BtnRemoteLogIn.Location = new Point(100, 159);
 			BtnRemoteLogIn.Name = "BtnRemoteLogIn";
 			BtnRemoteLogIn.Size = new Size(121, 35);
 			BtnRemoteLogIn.TabIndex = 5;
@@ -91,7 +90,7 @@
 			// BtnCancle
 			// 
 			BtnCancle.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			BtnCancle.Location = new Point(295, 184);
+			BtnCancle.Location = new Point(295, 159);
 			BtnCancle.Name = "BtnCancle";
 			BtnCancle.Size = new Size(75, 35);
 			BtnCancle.TabIndex = 6;
@@ -120,24 +119,11 @@
 			ShowPassWord.UseVisualStyleBackColor = true;
 			ShowPassWord.CheckedChanged += ShowPassWord_CheckedChanged;
 			// 
-			// ChkRemember
-			// 
-			ChkRemember.AutoSize = true;
-			ChkRemember.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-			ChkRemember.Location = new Point(184, 149);
-			ChkRemember.Name = "ChkRemember";
-			ChkRemember.Size = new Size(119, 23);
-			ChkRemember.TabIndex = 9;
-			ChkRemember.Text = "Remember Me";
-			ChkRemember.UseVisualStyleBackColor = true;
-			ChkRemember.CheckedChanged += ChkRemember_CheckedChanged;
-			// 
 			// UserInfo
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(416, 234);
-			Controls.Add(ChkRemember);
+			ClientSize = new Size(416, 203);
 			Controls.Add(ShowPassWord);
 			Controls.Add(lblRemoteInformation);
 			Controls.Add(BtnCancle);
@@ -163,6 +149,5 @@
 		private Button BtnCancle;
 		private Label lblRemoteInformation;
 		private CheckBox ShowPassWord;
-		private CheckBox ChkRemember;
 	}
 }
