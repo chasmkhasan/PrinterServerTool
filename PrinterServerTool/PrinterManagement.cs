@@ -1,37 +1,44 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Management.Infrastructure;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Management.Automation;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+using static System.Net.Mime.MediaTypeNames;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
 
 namespace PrinterServerTool
 {
 	internal class PrinterManagement
 	{
 		private PowerShellManagement _powerShellManagement;
-        private LoginManagement _loginManagement;
+		private LoginManagement _loginManagement;
 		private PSCredential _psCredential;
 
-        public PrinterManagement()
+		public PrinterManagement()
 		{
-            _powerShellManagement = new PowerShellManagement();
-            _loginManagement = new LoginManagement();
-        }
+			_powerShellManagement = new PowerShellManagement();
+			_loginManagement = new LoginManagement();
+		}
 
 		public PSCredential Credentials
 		{
 			get
 			{
-                return _psCredential;
-            }
+				return _psCredential;
+			}
 		}
 
-        public async Task<List<DataModel>> GetPrintersAsync(string selectedServer)
+		public async Task<List<DataModel>> GetPrintersAsync(string selectedServer)
 		{
 			List<DataModel> sharedPrinters = new List<DataModel>();
 
 			try
 			{
-                _psCredential = _loginManagement.GetCredentials(selectedServer);
+				_psCredential = _loginManagement.GetCredentials(selectedServer);
 
 				string credentialString = _loginManagement.GetCredentialString(_psCredential);
 
@@ -49,11 +56,11 @@ namespace PrinterServerTool
 				}
 			}
 			catch (PipelineStoppedException ex)
-			{	
+			{
 				LogException(ex);
 			}
 			catch (RuntimeException ex)
-			{	
+			{
 				LogException(ex);
 			}
 			catch (Exception ex)
@@ -67,9 +74,15 @@ namespace PrinterServerTool
 		private string SystemQuery()
 		{
 			string script = @"Get-CimInstance -ClassName Win32_Printer | 
-							Where-Object { $_.Shared -eq $true } | 
-							Select-Object Name, ShareName, DriverName, PortName, Location, SystemName, DriverVersion, PrinterStatus
-							";
+						Where-Object { $_.Shared -eq $true } | 
+					Select-Object Name, ShareName, DriverName, PortName, Location, SystemName, DriverVersion, PrinterStatus
+				";
+
+			//string script = @"Get-CimInstance -ClassName Win32_Printer |
+			//                 Where-Object { $_.Shared -eq $true } |
+			//                 Select-Object Name, ShareName, DriverName, PortName, Location, SystemName, DriverVersion, PrinterStatus
+			//                 @{ Name='IPAddress'; Expression={ (Test-Connection -ComputerName $_.SystemName -Count 1 -ErrorAction SilentlyContinue).IPAddress} }";
+
 			return script;
 		}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace PrinterServerTool
 		public string _systemName;
 		public string _driverVersion;
 		public string _printerModel;
+		public string _ipAddress;
 		public string _printerStatus;
 
 		public string PrinterName
@@ -88,6 +90,15 @@ namespace PrinterServerTool
 			set 
 			{ 
 				_printerModel = value; 
+			}
+		}
+
+		public string IPAddress
+		{
+			get { return _ipAddress; }
+			set
+			{
+				_ipAddress = value;
 			}
 		}
 

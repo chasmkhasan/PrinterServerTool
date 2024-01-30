@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Net;
 using System.Security;
+using System.ServiceProcess;
 using System.Windows.Forms;
 
 namespace PrinterServerTool
@@ -151,6 +152,7 @@ namespace PrinterServerTool
 					dataGridPrinter.Columns.Add("SystemName", "System Name");
 					dataGridPrinter.Columns.Add("DriverVersion", "Driver Version");
 					dataGridPrinter.Columns.Add("PrinterModel", "Printer Model");
+					//dataGridPrinter.Columns.Add("IPAddress", "IP Address");
 					dataGridPrinter.Columns.Add("PrinterStatus", "Printer Status");
 				}));
 			}
@@ -166,6 +168,7 @@ namespace PrinterServerTool
 					printer.SystemName,
 					printer.DriverVersion,
 					printer.PrinterModel,
+					//printer.IPAddress, // Add IPAddress value
 					printer.PrinterStatus
 				};
 
@@ -200,35 +203,193 @@ namespace PrinterServerTool
 			MessageBox.Show($"An error occurred: {errorMessage}", "Error");
 		}
 
+		//private void btnInstallPrinter_Click(object sender, EventArgs e)
+		//{
+		//	try
+		//	{
+		//		if (dataGridPrinter.SelectedRows == null)
+		//		{
+		//			MessageBox.Show("Please select a printer to install.", "Error");
+		//			return;
+		//		}
+
+		//		if (dataGridPrinter.SelectedRows.Count > 0)
+		//		{
+		//			DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
+		//			DataModel dataModel = _sharedPrinters[selectedRow.Index];
+
+		//			string selectedPrinterName = dataModel.PrinterName;
+
+		//			if (_credentials == null)
+		//			{
+		//				MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+		//				return;
+		//			}
+
+		//			//_installManagement.InstallPrinter(selectedPrinterName, _credentials, dataModel);
+		//			InstallPrinter(selectedPrinterName, _credentials, dataModel);
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
+		//	}
+		//}
+
 		private void btnInstallPrinter_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				if (dataGridPrinter.SelectedRows == null)
-				{
-					MessageBox.Show("Please select a printer to install.", "Error");
+				if (!EnsurePrintSpoolerServiceRunning())
 					return;
-				}
 
-				if (dataGridPrinter.SelectedRows.Count > 0)
-				{
-					DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
-					DataModel dataModel = _sharedPrinters[selectedRow.Index];
+				if (!ValidateSelectedPrinter())
+					return;
 
-					string selectedPrinterName = dataModel.PrinterName;
 
-					if (_credentials == null)
-					{
-						MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
-						return;
-					}
+				// Show installation in progress message
+				MessageBox.Show("Installing printer. Please wait...", "Info");
 
-					_installManagement.InstallPrinter(selectedPrinterName, _credentials, dataModel);
-				}
+				InstallSelectedPrinter();
+
+				// Show installation completed message
+				MessageBox.Show("Printer installation completed successfully.", "Info");
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show($"An error occurred during installation: {ex.Message}", "Error");
+			}
+		}
+
+		private bool ValidateSelectedPrinter()
+		{
+			if (dataGridPrinter.SelectedRows == null)
+			{
+				MessageBox.Show("Please select a printer to install.", "Error");
+				return false;
+			}
+
+			return true;
+		}
+
+		private void InstallSelectedPrinter()
+		{
+			DataGridViewRow selectedRow = dataGridPrinter.SelectedRows[0];
+			DataModel dataModel = _sharedPrinters[selectedRow.Index];
+
+			string selectedPrinterName = dataModel.PrinterName;
+			string selectedServerName = dataModel.SystemName;
+			string selectedPortName = dataModel.PortName;
+			string selectedDriverName = dataModel.DriverName;
+
+			if (_credentials == null)
+			{
+				MessageBox.Show("Error: Failed to retrieve credentials.", "Error");
+				return;
+			}
+
+			// Install the printer using PowerShell
+			InstallPrinter(selectedPrinterName, selectedServerName, selectedPortName, selectedDriverName);
+		}
+
+		private void InstallPrinter(string printerName, string systemName, string portName, string driverName)
+		{
+			try
+			{
+				using (PowerShell PowerShellInstance = PowerShell.Create())
+				{
+					// Define the PowerShell script
+					string script = $@"
+									$printerServer = ""{systemName}""
+									$printerName = ""{printerName}""
+									$portName = ""{portName}""
+									$driverName = ""{driverName}""
+
+									# Check if the printer port already exists
+									$existingPort = Get-PrinterPort -Name $portName
+
+									# If the port doesn't exist, create it
+									if (-not $existingPort) {{
+									Add-PrinterPort -Name $portName
+									}}
+
+									# Add the printer using the existing or newly created port and driver
+									Add-Printer -Name $printerName -PortName $portName -DriverName $driverName
+									";
+
+					// Load the script into the PowerShell process
+					PowerShellInstance.AddScript(script);
+
+					// Execute the script
+					Collection<PSObject> results = PowerShellInstance.Invoke();
+
+					// Check for errors
+					if (PowerShellInstance.HadErrors)
+					{
+						foreach (ErrorRecord error in PowerShellInstance.Streams.Error)
+						{
+							MessageBox.Show($"PowerShell error: {error.Exception.Message}", "Error");
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred during PowerShell execution: {ex.Message}", "Error");
+			}
+		}
+
+		private bool EnsurePrintSpoolerServiceRunning()
+		{
+			if (!IsPrintSpoolerServiceRunning())
+			{
+				MessageBox.Show("Print Spooler service is not running. Starting the service...", "Info");
+				StartPrintSpoolerService();
+			}
+
+			if (!IsPrintSpoolerServiceRunning())
+			{
+				MessageBox.Show("Unable to start Print Spooler service. Installation aborted.", "Error");
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool IsPrintSpoolerServiceRunning()
+		{
+			try
+			{
+				ServiceController spoolerService = new ServiceController("Spooler");
+				return spoolerService.Status == ServiceControllerStatus.Running;
+			}
+			catch (InvalidOperationException)
+			{
+				// Service not found
+				return false;
+			}
+			catch (Exception)
+			{
+				// Other exceptions
+				return false;
+			}
+		}
+
+		private void StartPrintSpoolerService()
+		{
+			ServiceController spoolerService = new ServiceController("Spooler");
+
+			try
+			{
+				if (spoolerService.Status != ServiceControllerStatus.Running)
+				{
+					spoolerService.Start();
+					spoolerService.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(30));
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error starting Print Spooler service: {ex.Message}\n\n{ex.StackTrace}", "Error");
 			}
 		}
 	}
