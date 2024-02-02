@@ -247,23 +247,25 @@ namespace PrinterServerTool
 		{
 			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
-                string addPrinterCommand = $@"
-											$printServer = ""{_selectedServer}""
-											$printerName = ""{dataModel.PrinterName}""
-            
-											$cimSession = New-CimSession -ComputerName $printServer -Credential $credential
+				PowerShellInstance.AddScript($"winrm set winrm/config/client '@{{TrustedHosts=\"{_selectedServer}\"}}'");
 
-											try {{
-											 Add-Printer -ConnectionName \\$printServer\$printerName -CimSession $cimSession
-												Write-Host ""Printer installation successful.""
-											}} 
-											catch {{
-												Write-Host ""Error installing printer: $_.Exception.Message""
-											}}";
+				string addPrinterCommand = $@"
+										$printServer = ""{_selectedServer}""
+										$printerName = ""{dataModel.PrinterName}""
+    
+										$cimSession = New-CimSession -ComputerName $printServer -Credential $credential -Authentication Default
 
-				PowerShellInstance.AddScript(addPrinterCommand);
+										try {{
+										 Add-Printer -ConnectionName \\$printServer\$printerName -CimSession $cimSession
+										 Write-Host ""Printer installation successful.""
+										}} 
+										catch {{
+										 Write-Host ""Error installing printer: $($_.Exception.Message)""
+										}}";
+
 				PowerShellInstance.AddParameter("credential", credential);
-
+				PowerShellInstance.AddScript(addPrinterCommand);
+				
 				Collection<PSObject> result = PowerShellInstance.Invoke();
 
 				if (PowerShellInstance.HadErrors)
@@ -277,6 +279,7 @@ namespace PrinterServerTool
 				}
 			}
 		}
+
 
 
 
