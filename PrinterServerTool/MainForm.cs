@@ -19,8 +19,9 @@ namespace PrinterServerTool
 		private UserInfo _userInfo;
 		private PSCredential _credentials;
 		private PowerShellManagement _powerShellManagement;
+		private string _selectedServer;
 
-		public MainForm()
+        public MainForm()
 		{
 			_printerManagement = new PrinterManagement();
 			_loginManagement = new LoginManagement();
@@ -87,9 +88,9 @@ namespace PrinterServerTool
 
 			try
 			{
-				string selectedServer = GetSelectedServer();
+				_selectedServer = GetSelectedServer();
 
-				_sharedPrinters = await _printerManagement.GetPrintersAsync(selectedServer);
+				_sharedPrinters = await _printerManagement.GetPrintersAsync(_selectedServer);
 				_credentials = _printerManagement.Credentials;
 
 				if (_sharedPrinters.Count > 0)
@@ -246,8 +247,8 @@ namespace PrinterServerTool
 		{
 			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
-				string addPrinterCommand = $@"
-											$printServer = ""{dataModel.SystemName}""
+                string addPrinterCommand = $@"
+											$printServer = ""{_selectedServer}""
 											$printerName = ""{dataModel.PrinterName}""
             
 											$cimSession = New-CimSession -ComputerName $printServer -Credential $credential
