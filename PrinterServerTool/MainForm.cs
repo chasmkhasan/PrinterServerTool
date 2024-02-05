@@ -247,12 +247,11 @@ namespace PrinterServerTool
 		{
 			using (PowerShell PowerShellInstance = PowerShell.Create())
 			{
-				PowerShellInstance.AddScript($"winrm set winrm/config/client '@{{TrustedHosts=\"{_selectedServer}\"}}'");
-
+				
 				string addPrinterCommand = $@"
 										$printServer = ""{_selectedServer}""
 										$printerName = ""{dataModel.PrinterName}""
-    
+
 										$cimSession = New-CimSession -ComputerName $printServer -Credential $credential -Authentication Default
 
 										try {{
@@ -263,9 +262,10 @@ namespace PrinterServerTool
 										 Write-Host ""Error installing printer: $($_.Exception.Message)""
 										}}";
 
-				PowerShellInstance.AddParameter("credential", credential);
 				PowerShellInstance.AddScript(addPrinterCommand);
-				
+
+				PowerShellInstance.AddParameter("credential", credential);
+
 				Collection<PSObject> result = PowerShellInstance.Invoke();
 
 				if (PowerShellInstance.HadErrors)
@@ -281,7 +281,50 @@ namespace PrinterServerTool
 		}
 
 
+		//public void InstallPrinter(string selectedPrinterName, PSCredential credential, DataModel dataModel)
+		//{
+		//	using (PowerShell PowerShellInstance = PowerShell.Create())
+		//	{
+		//		_credentials = _loginManagement.GetCredentials(_selectedServer);
+		//		string credentialString = _loginManagement.GetCredentialString(_credentials);
 
+		//		if (_credentials != null)
+		//		{
+		//			string addPrinterCommand = $@"
+		//										$printServer = '{_selectedServer}'
+		//										$printerName = '{dataModel.PrinterName}'
+		//										$scriptBlock = {{
+		//											param($printerName, $printServer)
+		//											Add-Printer -ConnectionName ""\\$printServer\$printerName""
+		//										}}
+
+		//										try {{
+		//											Invoke-Command -ScriptBlock $scriptBlock -ArgumentList $printerName, $printServer -Credential (New-Object PSCredential '{credential.UserName}', (ConvertTo-SecureString '{credential.Password}' -AsPlainText -Force)) -ErrorAction Stop
+		//										 Write-Host 'Printer installation successful.'
+		//										}}
+		//										catch {{
+		//											Write-Host 'Error installing printer: $($_.Exception.Message)'
+		//										}}
+		//									";
+
+		//			PowerShellInstance.AddScript(addPrinterCommand);
+		//		}
+
+		//		PowerShellInstance.AddParameter("credential", credential);
+
+		//		Collection<PSObject> result = PowerShellInstance.Invoke();
+
+		//		if (PowerShellInstance.HadErrors)
+		//		{
+		//			string errorMessage = string.Join("\n", PowerShellInstance.Streams.Error.Select(error => error.ToString()));
+		//			MessageBox.Show($"Error installing printer: {errorMessage}", "Error");
+		//		}
+		//		else
+		//		{
+		//			MessageBox.Show($"Printer '{selectedPrinterName}' installed successfully.", "Installation Result");
+		//		}
+		//	}
+		//}
 
 		//private void InstallSelectedPrinter()
 		//{
