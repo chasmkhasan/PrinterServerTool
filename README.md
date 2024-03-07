@@ -20,4 +20,8 @@ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/ab
 For activated Executive policy: before running this app you need run below code in powershell. Powershell will be run as an administrator. Caution: its only for production purpose.
 PowerShell: 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser'
 
-
+# IF Remote Does not reply or SHowing Error like : Connecting to remote server 'Remote Server IP Address' failed with the following error message - WinRM, Kerberos, HTTPS or Trusted Host. Solution Below:
+- run this quey in your powershell first then start ur code.
+- Set-Item WSMan:\localhost\Client\TrustedHosts -Value '192.168.0.7' -Concatenate
+-Enable-PSRemoting -Force
+Check Firewall Settings: Ensure that the necessary ports for WinRM (default is TCP port 5985 for HTTP and TCP port 5986 for HTTPS) are open on both the local and remote systems' firewalls.
